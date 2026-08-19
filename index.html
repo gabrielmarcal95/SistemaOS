@@ -774,109 +774,251 @@
 
         <!-- ================= CONFIGURAÇÕES E BACKUP VIEW ================= -->
         <section id="view-configuracoes" class="content-view">
-          <div style="margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.05);">
-            <h2 style="font-family: var(--font-secondary); font-size: 1.8rem; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 10px;">
-              <i data-lucide="settings" style="color: var(--border-focus); width: 26px; height: 26px;"></i>
-              Configurações do Sistema
+
+          <!-- Page Header -->
+          <div style="margin-bottom: 28px;">
+            <h2 style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 10px;">
+              <i data-lucide="settings-2" style="color: var(--border-focus); width: 24px; height: 24px;"></i>
+              Configurações & Backup
             </h2>
-            <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 6px;">Gerencie suas preferências, faça backup dos seus dados e personalize a identidade visual da plataforma.</p>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 5px;">Gerencie dados, automação e a identidade visual da plataforma.</p>
           </div>
 
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px; align-items: start;">
-            
-            <!-- LEFT COLUMN: Data & Automation -->
-            <div style="display: flex; flex-direction: column; gap: 24px;">
-              
-              <!-- DATA & BACKUP (Combined) -->
+          <!-- Main Grid: 2 columns -->
+          <div style="display: grid; grid-template-columns: 1fr 1.4fr; gap: 20px; align-items: start;">
+
+            <!-- ══════════════ LEFT COLUMN ══════════════ -->
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+
+              <!-- BACKUP & DADOS -->
               <div class="card" style="border-top: 3px solid var(--color-success);">
                 <div class="card-header">
-                  <h3 style="display:flex;align-items:center;gap:8px;">
-                    <i data-lucide="database" style="color:var(--color-success);width:18px;height:18px;"></i>
-                    Gerenciamento de Dados
+                  <h3 style="display:flex;align-items:center;gap:8px; font-size:0.95rem;">
+                    <i data-lucide="hard-drive" style="color:var(--color-success);width:16px;height:16px;"></i>
+                    Dados & Backup
                   </h3>
                 </div>
-                <div class="card-content">
-                  <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 18px; line-height: 1.4;">O sistema funciona localmente. Realize backups periódicos para proteger seus dados contra limpezas de histórico do navegador.</p>
-                  
-                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                    <!-- Export -->
-                    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; text-align: center; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.04)'; this.style.borderColor='var(--color-success)';" onmouseout="this.style.background='rgba(255,255,255,0.02)'; this.style.borderColor='rgba(255,255,255,0.05)';">
-                      <div style="width: 44px; height: 44px; border-radius: 12px; background: hsla(150, 80%, 40%, 0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto;">
-                        <i data-lucide="download-cloud" style="color: var(--color-success); width: 22px; height: 22px;"></i>
-                      </div>
-                      <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 6px; font-weight: 600;">Backup Manual</h4>
-                      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.4;">Baixe um arquivo contendo todas as suas Ordens e Clientes.</p>
-                      <button class="btn btn-primary btn-sm" id="export-backup-btn" style="width: 100%; justify-content: center; background: var(--color-success); color: #fff; border: none; padding: 8px;">Exportar (.JSON)</button>
+                <div class="card-content" style="display:flex; flex-direction:column; gap:10px;">
+                  <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">Dados salvos localmente no navegador. Faça backups regulares para não perder informações.</p>
+
+                  <!-- Export -->
+                  <button class="btn btn-sm btn-icon" id="export-backup-btn"
+                          style="width:100%; justify-content:center; background:rgba(34,197,94,0.12); color:var(--color-success); border:1px solid rgba(34,197,94,0.25); padding:10px; font-weight:600;">
+                    <i data-lucide="download-cloud" style="width:15px;height:15px;"></i>
+                    Exportar Backup (.JSON)
+                  </button>
+
+                  <!-- Import -->
+                  <div style="border:1px solid var(--border-subtle); border-radius:10px; padding:12px; background:rgba(255,255,255,0.02);">
+                    <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:8px; font-weight:500;">
+                      <i data-lucide="upload-cloud" style="width:13px;height:13px; vertical-align:middle; margin-right:4px;"></i>
+                      Restaurar de Backup
+                    </p>
+                    <div style="display:flex; gap:8px;">
+                      <label for="import-backup-file" class="btn btn-secondary btn-sm" style="flex:1; justify-content:center; cursor:pointer; font-size:0.75rem;">
+                        <i data-lucide="folder-open" style="width:13px;height:13px;"></i> Escolher arquivo
+                      </label>
+                      <input type="file" id="import-backup-file" accept=".json" class="hidden">
+                      <button class="btn btn-primary btn-sm" id="import-backup-btn" disabled style="font-size:0.75rem; padding:6px 12px;">Confirmar</button>
                     </div>
-                    
-                    <!-- Import -->
-                    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; text-align: center; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.04)'; this.style.borderColor='var(--border-focus)';" onmouseout="this.style.background='rgba(255,255,255,0.02)'; this.style.borderColor='rgba(255,255,255,0.05)';">
-                      <div style="width: 44px; height: 44px; border-radius: 12px; background: hsla(220, 80%, 60%, 0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto;">
-                        <i data-lucide="upload-cloud" style="color: var(--border-focus); width: 22px; height: 22px;"></i>
-                      </div>
-                      <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 6px; font-weight: 600;">Restaurar Dados</h4>
-                      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.4;">Carregue um arquivo para substituir os dados atuais.</p>
-                      
-                      <div style="display: flex; flex-direction: column; gap: 8px;">
-                        <label for="import-backup-file" class="btn btn-secondary btn-sm" style="width: 100%; justify-content: center; cursor: pointer; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 8px; font-size: 0.75rem;">
-                          <i data-lucide="folder-open" style="width:14px;height:14px;"></i> Procurar...
-                        </label>
-                        <input type="file" id="import-backup-file" accept=".json" class="hidden">
-                        <button class="btn btn-primary btn-sm" id="import-backup-btn" disabled style="width: 100%; justify-content: center; padding: 8px; font-size: 0.75rem;">Confirmar</button>
-                      </div>
-                    </div>
-                  </div>
-                  <div style="text-align: center; margin-top: 10px;">
-                    <span id="import-file-name" style="font-size: 0.75rem; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 12px; display: inline-block;">Nenhum arquivo selecionado</span>
+                    <span id="import-file-name" style="font-size:0.72rem; color:var(--text-muted); display:block; margin-top:6px;">Nenhum arquivo selecionado</span>
                   </div>
                 </div>
               </div>
 
-              <!-- IA CONFIG -->
-              <div class="card" style="border-top: 3px solid hsl(42, 95%, 60%);">
+              <!-- INTELIGÊNCIA ARTIFICIAL -->
+              <div class="card" style="border-top: 3px solid hsl(42,95%,55%);">
                 <div class="card-header">
-                  <h3 style="display:flex;align-items:center;gap:8px;">
-                    <i data-lucide="cpu" style="color:hsl(42, 95%, 60%);width:18px;height:18px;"></i>
-                    Inteligência Artificial (OpenAI)
+                  <h3 style="display:flex;align-items:center;gap:8px; font-size:0.95rem;">
+                    <i data-lucide="sparkles" style="color:hsl(42,95%,55%);width:16px;height:16px;"></i>
+                    Inteligência Artificial
                   </h3>
                 </div>
-                <div class="card-content text-muted">
-                  <p style="font-size: 0.85rem; line-height: 1.5; margin-bottom: 14px;">Habilite a automação com IA para ler arquivos ou buscar dimensões automaticamente na internet durante a criação de novos modelos.</p>
-                  
-                  <div style="background: linear-gradient(135deg, rgba(241, 160, 0, 0.08) 0%, rgba(241, 160, 0, 0.02) 100%); border: 1px solid rgba(241, 160, 0, 0.2); border-radius: 10px; padding: 14px; font-size: 0.8rem; line-height: 1.5;">
-                    <strong style="color: hsl(42, 95%, 60%); display: flex; align-items: center; gap: 6px; margin-bottom: 8px; font-size: 0.85rem;">
-                      <i data-lucide="key" style="width:14px;height:14px;"></i> Como configurar:
-                    </strong>
-                    <ol style="margin-left: 20px; display: flex; flex-direction: column; gap: 4px; color: var(--text-secondary);">
-                      <li>Acesse a <a href="https://platform.openai.com/api-keys" target="_blank" style="color: var(--border-focus); text-decoration: none; font-weight: 500; border-bottom: 1px dashed var(--border-focus);">OpenAI Platform</a>.</li>
-                      <li>Clique em <strong>+ Create new secret key</strong>.</li>
-                      <li>Copie a chave gerada (ela começa com <code>sk-</code>).</li>
-                      <li>Adicione um saldo mínimo na aba <em>Billing</em> (custo irrisório por uso).</li>
-                    </ol>
-                  </div>
+                <div class="card-content" style="display:flex; flex-direction:column; gap:12px;">
+                  <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.5;">Habilite a IA para buscar dimensões de modelos automaticamente durante o cadastro.</p>
 
-                  <div class="form-group" style="margin-top: 16px;">
-                    <label for="settings-openai-key" style="color: var(--text-main); font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 6px;">
-                      <i data-lucide="lock" style="width:14px;height:14px;color:var(--text-muted);"></i> Chave de API Secreta
+                  <!-- How-to (collapsed style) -->
+                  <details style="background:rgba(241,160,0,0.05); border:1px solid rgba(241,160,0,0.15); border-radius:8px; padding:10px 12px; font-size:0.78rem;">
+                    <summary style="cursor:pointer; color:hsl(42,95%,60%); font-weight:600; list-style:none; display:flex; align-items:center; gap:6px;">
+                      <i data-lucide="key" style="width:13px;height:13px;"></i> Como obter a chave API
+                    </summary>
+                    <ol style="margin: 10px 0 0 16px; color:var(--text-muted); display:flex; flex-direction:column; gap:4px; line-height:1.5;">
+                      <li>Acesse a <a href="https://platform.openai.com/api-keys" target="_blank" style="color:var(--border-focus);">OpenAI Platform</a>.</li>
+                      <li>Clique em <strong>+ Create new secret key</strong>.</li>
+                      <li>Copie a chave (começa com <code>sk-</code>).</li>
+                      <li>Adicione saldo em <em>Billing</em>.</li>
+                    </ol>
+                  </details>
+
+                  <!-- API Key field -->
+                  <div>
+                    <label style="font-size:0.8rem; font-weight:600; color:var(--text-primary); display:flex; align-items:center; gap:5px; margin-bottom:6px;">
+                      <i data-lucide="lock" style="width:13px;height:13px; color:var(--text-muted);"></i> Chave de API
                     </label>
-                    <div style="display:flex; gap:10px; margin-top: 8px;">
-                      <input type="password" id="settings-openai-key" placeholder="sk-proj-..." style="flex:1; padding: 10px 14px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-family: monospace; font-size: 0.85rem; transition: all 0.2s;" onfocus="this.style.borderColor='hsl(42, 95%, 60%)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
-                      <button class="btn btn-secondary btn-icon" id="btn-delete-openai-key" title="Remover chave" style="padding: 0 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
-                        <i data-lucide="trash-2" style="color: var(--color-danger);"></i>
+                    <div style="display:flex; gap:8px;">
+                      <input type="password" id="settings-openai-key" placeholder="sk-proj-..."
+                             style="flex:1; padding:9px 12px; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff; font-family:monospace; font-size:0.82rem;"
+                             onfocus="this.style.borderColor='hsl(42,95%,60%)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+                      <button class="btn btn-secondary btn-sm btn-icon" id="btn-delete-openai-key" title="Remover chave" style="padding:0 10px;">
+                        <i data-lucide="trash-2" style="color:var(--color-danger); width:14px;height:14px;"></i>
                       </button>
                     </div>
-                    <p style="font-size: 0.72rem; color: var(--text-muted); margin-top: 6px; display:flex; align-items:center; gap:4px;">
-                      <i data-lucide="info" style="width:11px;height:11px;"></i> Salva automaticamente ao sair do campo.
+                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:5px; display:flex; align-items:center; gap:4px;">
+                      <i data-lucide="info" style="width:10px;height:10px;"></i> Salva ao sair do campo.
                     </p>
                   </div>
                 </div>
               </div>
 
-              <!-- ALERT SETTINGS CARD -->
+              <!-- DANGER ZONE -->
+              <div class="card" style="border:1px solid rgba(239,68,68,0.25); background:rgba(239,68,68,0.02);">
+                <div class="card-header" style="border-bottom:1px solid rgba(239,68,68,0.1);">
+                  <h3 style="color:var(--color-danger); display:flex; align-items:center; gap:8px; font-size:0.95rem;">
+                    <i data-lucide="shield-alert" style="width:16px;height:16px;"></i>
+                    Zona de Perigo
+                  </h3>
+                </div>
+                <div class="card-content">
+                  <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:14px; line-height:1.5;">Exclui permanentemente todos os registros de Ordens, Clientes, Modelos e Fornecedores. Não há reversão sem backup.</p>
+                  <button class="btn btn-danger btn-icon" id="reset-db-btn" style="width:100%; justify-content:center; padding:10px; font-weight:600;">
+                    <i data-lucide="trash-2"></i> Resetar Todos os Dados
+                  </button>
+                </div>
+              </div>
+
+            </div>
+            <!-- ══════════════ END LEFT COLUMN ══════════════ -->
+
+            <!-- ══════════════ RIGHT COLUMN ══════════════ -->
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+
+              <!-- PERSONALIZAÇÃO VISUAL -->
+              <div class="card" id="card-logo-settings" style="border-top: 3px solid var(--border-focus);">
+                <div class="card-header">
+                  <h3 style="display:flex;align-items:center;gap:8px; font-size:0.95rem;">
+                    <i data-lucide="palette" style="color:var(--border-focus);width:16px;height:16px;"></i>
+                    Personalização Visual
+                  </h3>
+                </div>
+                <div class="card-content" style="display:flex; flex-direction:column; gap:20px;">
+
+                  <!-- Company Name -->
+                  <div>
+                    <label style="font-size:0.8rem; font-weight:600; color:var(--text-primary); display:flex; align-items:center; gap:5px; margin-bottom:6px;">
+                      <i data-lucide="building-2" style="width:13px;height:13px; color:var(--border-focus);"></i> Nome da Empresa
+                    </label>
+                    <input type="text" id="input-company-name" placeholder="Ex: AeroPrint3D"
+                           style="width:100%; padding:9px 12px; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff; font-size:0.9rem;">
+                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:5px; display:flex; align-items:center; gap:4px;">
+                      <i data-lucide="info" style="width:10px;height:10px;"></i> Salvo ao sair do campo.
+                    </p>
+                  </div>
+
+                  <div style="border-top:1px solid var(--border-subtle); padding-top:16px;">
+                    <p style="font-size:0.8rem; font-weight:600; color:var(--text-primary); margin-bottom:14px; display:flex; align-items:center; gap:6px;">
+                      <i data-lucide="image" style="width:14px;height:14px;"></i> Logos & Ícones
+                    </p>
+
+                    <!-- Logo Sidebar -->
+                    <div style="display:flex; align-items:center; justify-content:space-between; padding:12px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:10px; margin-bottom:10px;">
+                      <div style="display:flex; align-items:center; gap:12px;">
+                        <div id="logo-sidebar-preview-box" style="width:52px;height:52px;border:1px solid rgba(255,255,255,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);flex-shrink:0;overflow:hidden;">
+                          <img id="logo-sidebar-preview-img" src="" alt="" style="display:none;max-width:100%;max-height:100%;object-fit:contain;">
+                          <i data-lucide="image-plus" style="color:rgba(255,255,255,0.2);width:20px;height:20px;" id="logo-sidebar-preview-placeholder"></i>
+                        </div>
+                        <div>
+                          <p style="font-size:0.83rem; font-weight:600; color:var(--text-primary); display:flex; align-items:center; gap:5px;">
+                            <i data-lucide="layout-sidebar" style="width:13px;height:13px;color:var(--border-focus);"></i> Logo do Menu Lateral
+                          </p>
+                          <p style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">Exibida no canto superior esquerdo.</p>
+                        </div>
+                      </div>
+                      <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
+                        <label for="logo-sidebar-upload" class="btn btn-secondary btn-sm" style="cursor:pointer; font-size:0.73rem; padding:5px 10px;">
+                          <i data-lucide="upload" style="width:12px;height:12px;"></i> Alterar
+                        </label>
+                        <input type="file" id="logo-sidebar-upload" accept="image/*" class="hidden">
+                        <button class="btn btn-secondary btn-sm btn-icon" id="btn-remove-logo-sidebar" style="display:none; padding:5px 8px;">
+                          <i data-lucide="trash-2" style="width:13px;height:13px;color:var(--color-danger);"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- BG Options -->
+                    <div id="logo-bg-options" style="display:none; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.05); border-radius:8px; padding:10px 12px; margin-bottom:10px;">
+                      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                        <span style="font-size:0.75rem; font-weight:600; color:var(--text-secondary);">Fundo da imagem:</span>
+                        <div style="display:flex; gap:12px;">
+                          <label style="display:flex; align-items:center; gap:5px; font-size:0.75rem; cursor:pointer; color:#fff;">
+                            <input type="radio" name="logo-bg-mode" value="color" id="logo-bg-color-opt" checked> Cor
+                          </label>
+                          <input type="color" id="logo-bg-color-picker" value="#f1a000" style="width:22px;height:22px;border:none;border-radius:4px;cursor:pointer;padding:0;background:none;">
+                          <div style="width:1px;background:rgba(255,255,255,0.1);margin:0 4px;"></div>
+                          <label style="display:flex; align-items:center; gap:5px; font-size:0.75rem; cursor:pointer; color:#fff;">
+                            <input type="radio" name="logo-bg-mode" value="none" id="logo-bg-none-opt"> Transparente
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Logo Impressão -->
+                    <div style="display:flex; align-items:center; justify-content:space-between; padding:12px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:10px; margin-bottom:10px;">
+                      <div style="display:flex; align-items:center; gap:12px;">
+                        <div id="logo-print-preview-box" style="width:52px;height:52px;border:1px solid rgba(255,255,255,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);flex-shrink:0;overflow:hidden;">
+                          <img id="logo-print-preview-img" src="" alt="" style="display:none;max-width:100%;max-height:100%;object-fit:contain;">
+                          <i data-lucide="image-plus" style="color:rgba(255,255,255,0.2);width:20px;height:20px;" id="logo-print-preview-placeholder"></i>
+                        </div>
+                        <div>
+                          <p style="font-size:0.83rem; font-weight:600; color:var(--text-primary); display:flex; align-items:center; gap:5px;">
+                            <i data-lucide="printer" style="width:13px;height:13px;color:var(--border-focus);"></i> Logo para Impressão
+                          </p>
+                          <p style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">Usada no cabeçalho das OS (PDF).</p>
+                        </div>
+                      </div>
+                      <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
+                        <label for="logo-print-upload" class="btn btn-secondary btn-sm" style="cursor:pointer; font-size:0.73rem; padding:5px 10px;">
+                          <i data-lucide="upload" style="width:12px;height:12px;"></i> Alterar
+                        </label>
+                        <input type="file" id="logo-print-upload" accept="image/*" class="hidden">
+                        <button class="btn btn-secondary btn-sm btn-icon" id="btn-remove-logo-print" style="display:none; padding:5px 8px;">
+                          <i data-lucide="trash-2" style="width:13px;height:13px;color:var(--color-danger);"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Favicon -->
+                    <div style="display:flex; align-items:center; justify-content:space-between; padding:12px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:10px;">
+                      <div style="display:flex; align-items:center; gap:12px;">
+                        <div id="logo-fav-preview-box" style="width:40px;height:40px;border:1px solid rgba(255,255,255,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);flex-shrink:0;overflow:hidden;">
+                          <img id="logo-fav-preview-img" src="" alt="" style="display:none;max-width:100%;max-height:100%;object-fit:contain;">
+                          <i data-lucide="image-plus" style="color:rgba(255,255,255,0.2);width:16px;height:16px;" id="logo-fav-preview-placeholder"></i>
+                        </div>
+                        <div>
+                          <p style="font-size:0.83rem; font-weight:600; color:var(--text-primary); display:flex; align-items:center; gap:5px;">
+                            <i data-lucide="globe" style="width:13px;height:13px;color:var(--border-focus);"></i> Favicon do Navegador
+                          </p>
+                          <p style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">Ícone da aba. PNG quadrado recomendado.</p>
+                        </div>
+                      </div>
+                      <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
+                        <label for="logo-fav-upload" class="btn btn-secondary btn-sm" style="cursor:pointer; font-size:0.73rem; padding:5px 10px;">
+                          <i data-lucide="upload" style="width:12px;height:12px;"></i> Alterar
+                        </label>
+                        <input type="file" id="logo-fav-upload" accept="image/*" class="hidden">
+                        <button class="btn btn-secondary btn-sm btn-icon" id="btn-remove-logo-fav" style="display:none; padding:5px 8px;">
+                          <i data-lucide="trash-2" style="width:13px;height:13px;color:var(--color-danger);"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ALERTAS -->
               <div class="card" id="card-alert-settings" style="border-top: 3px solid var(--color-warning);">
                 <div class="card-header">
-                  <h3 style="display:flex;align-items:center;gap:8px;">
-                    <i data-lucide="bell-ring" style="color:var(--color-warning);width:18px;height:18px;"></i>
+                  <h3 style="display:flex;align-items:center;gap:8px; font-size:0.95rem;">
+                    <i data-lucide="bell-ring" style="color:var(--color-warning);width:16px;height:16px;"></i>
                     Configurações de Alertas
                   </h3>
                 </div>
@@ -886,161 +1028,11 @@
               </div>
 
             </div>
-
-            <!-- RIGHT COLUMN: Personalization -->
-            <div style="display: flex; flex-direction: column; gap: 24px;">
-              
-              <!-- IDENTIDADE VISUAL -->
-              <div class="card" id="card-logo-settings" style="border-top: 3px solid var(--border-focus);">
-                <div class="card-header">
-                  <h3 style="display:flex;align-items:center;gap:8px;">
-                    <i data-lucide="palette" style="color:var(--border-focus);width:18px;height:18px;"></i>
-                    Personalização Visual
-                  </h3>
-                </div>
-                <div class="card-content text-muted">
-
-                  <!-- Company Name -->
-                  <div class="form-group" style="margin-bottom:28px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 16px; border-radius: 12px;">
-                    <label style="font-weight:600; color:var(--text-main); font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
-                      <i data-lucide="building-2" style="width:16px;height:16px;color:var(--border-focus);"></i> Nome da Empresa
-                    </label>
-                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; margin-bottom: 12px;">Usado em relatórios e cabeçalhos do sistema.</p>
-                    <input type="text" id="input-company-name" placeholder="Ex: AeroPrint3D"
-                           style="width: 100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff; font-size: 0.9rem;">
-                    <p style="font-size: 0.72rem; color: var(--text-muted); margin-top: 6px; display:flex; align-items:center; gap:4px;">
-                      <i data-lucide="info" style="width:11px;height:11px;"></i> Salvo automaticamente ao sair do campo.
-                    </p>
-                  </div>
-
-                  <h4 style="font-size: 0.95rem; color: #fff; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 8px;">
-                    <i data-lucide="image" style="width: 18px; height: 18px;"></i> Logos e Ícones
-                  </h4>
-
-                  <div style="display:grid; grid-template-columns: 1fr; gap:16px;">
-
-                    <!-- === SIDEBAR LOGO === -->
-                    <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:12px; padding:16px; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background='rgba(255,255,255,0.02)'">
-                      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                        <div>
-                          <p style="font-weight:600; color:var(--text-main); margin-bottom:4px; display:flex; align-items:center; gap:6px; font-size: 0.85rem;">
-                            <i data-lucide="layout-sidebar" style="width:15px;height:15px; color:var(--border-focus);"></i> Logo Principal (Menu Lateral)
-                          </p>
-                          <p style="font-size:0.75rem; color: var(--text-muted); margin-bottom:14px; max-width: 200px; line-height: 1.4;">Exibida permanentemente no canto superior esquerdo.</p>
-                        </div>
-                        <div id="logo-sidebar-preview-box" style="width:64px;height:64px;border:1px solid rgba(255,255,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);flex-shrink:0;overflow:hidden; box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);">
-                          <img id="logo-sidebar-preview-img" src="" alt="" style="display:none;max-width:100%;max-height:100%;object-fit:contain;">
-                          <i data-lucide="image-plus" style="color:rgba(255,255,255,0.2);width:24px;height:24px;" id="logo-sidebar-preview-placeholder"></i>
-                        </div>
-                      </div>
-                      
-                      <div style="display:flex; align-items:center; gap:8px;">
-                        <label for="logo-sidebar-upload" class="btn btn-primary btn-sm" style="cursor:pointer; font-size:0.75rem; padding:6px 12px; border-radius: 6px;">
-                          <i data-lucide="upload" style="width:14px;height:14px;"></i> Alterar Logo
-                        </label>
-                        <input type="file" id="logo-sidebar-upload" accept="image/*" class="hidden">
-                        <button class="btn btn-secondary btn-sm btn-icon" id="btn-remove-logo-sidebar" style="display:none; font-size:0.75rem; padding:6px 10px; border-radius: 6px;">
-                          <i data-lucide="trash-2" style="width:14px;height:14px;color:var(--color-danger);"></i>
-                        </button>
-                      </div>
-
-                      <!-- BG Options -->
-                      <div id="logo-bg-options" style="display:none; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.05); border-radius:8px; padding:10px 12px; margin-top: 14px;">
-                        <div style="display:flex; justify-content: space-between; align-items:center; flex-wrap:wrap; gap: 10px;">
-                          <span style="font-size:0.75rem; font-weight:600; color:var(--text-secondary);">Fundo da imagem:</span>
-                          <div style="display: flex; gap: 12px;">
-                            <label style="display:flex; align-items:center; gap:5px; font-size:0.75rem; cursor:pointer; color: #fff;">
-                              <input type="radio" name="logo-bg-mode" value="color" id="logo-bg-color-opt" checked> Cor
-                            </label>
-                            <input type="color" id="logo-bg-color-picker" value="#f1a000" style="width:24px;height:24px;border:none;border-radius:4px;cursor:pointer;padding:0;background:none;">
-                            <div style="width: 1px; background: rgba(255,255,255,0.1); margin: 0 4px;"></div>
-                            <label style="display:flex; align-items:center; gap:5px; font-size:0.75rem; cursor:pointer; color: #fff;">
-                              <input type="radio" name="logo-bg-mode" value="none" id="logo-bg-none-opt"> Transparente
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- === PRINT LOGO === -->
-                    <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:12px; padding:16px; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background='rgba(255,255,255,0.02)'">
-                      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                        <div>
-                          <p style="font-weight:600; color:var(--text-main); margin-bottom:4px; display:flex; align-items:center; gap:6px; font-size: 0.85rem;">
-                            <i data-lucide="printer" style="width:15px;height:15px; color:var(--border-focus);"></i> Logo para Impressão
-                          </p>
-                          <p style="font-size:0.75rem; color: var(--text-muted); margin-bottom:14px; max-width: 200px; line-height: 1.4;">Usada no cabeçalho das Ordens de Serviço (PDF).</p>
-                        </div>
-                        <div id="logo-print-preview-box" style="width:64px;height:64px;border:1px solid rgba(255,255,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);flex-shrink:0;overflow:hidden;">
-                          <img id="logo-print-preview-img" src="" alt="" style="display:none;max-width:100%;max-height:100%;object-fit:contain;">
-                          <i data-lucide="image-plus" style="color:rgba(255,255,255,0.2);width:24px;height:24px;" id="logo-print-preview-placeholder"></i>
-                        </div>
-                      </div>
-                      
-                      <div style="display:flex; align-items:center; gap:8px;">
-                        <label for="logo-print-upload" class="btn btn-secondary btn-sm" style="cursor:pointer; font-size:0.75rem; padding:6px 12px; border-radius: 6px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
-                          <i data-lucide="upload" style="width:14px;height:14px;"></i> Alterar
-                        </label>
-                        <input type="file" id="logo-print-upload" accept="image/*" class="hidden">
-                        <button class="btn btn-secondary btn-sm btn-icon" id="btn-remove-logo-print" style="display:none; font-size:0.75rem; padding:6px 10px; border-radius: 6px;">
-                          <i data-lucide="trash-2" style="width:14px;height:14px;color:var(--color-danger);"></i>
-                        </button>
-                      </div>
-                    </div>
-
-                    <!-- === FAVICON === -->
-                    <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:12px; padding:16px; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background='rgba(255,255,255,0.02)'">
-                      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                        <div>
-                          <p style="font-weight:600; color:var(--text-main); margin-bottom:4px; display:flex; align-items:center; gap:6px; font-size: 0.85rem;">
-                            <i data-lucide="globe" style="width:15px;height:15px; color:var(--border-focus);"></i> Favicon do Navegador
-                          </p>
-                          <p style="font-size:0.75rem; color: var(--text-muted); margin-bottom:14px; max-width: 200px; line-height: 1.4;">Miniatura que aparece na aba. Recomendado: PNG quadrado.</p>
-                        </div>
-                        <div id="logo-fav-preview-box" style="width:48px;height:48px;border:1px solid rgba(255,255,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);flex-shrink:0;overflow:hidden;">
-                          <img id="logo-fav-preview-img" src="" alt="" style="display:none;max-width:100%;max-height:100%;object-fit:contain;">
-                          <i data-lucide="image-plus" style="color:rgba(255,255,255,0.2);width:20px;height:20px;" id="logo-fav-preview-placeholder"></i>
-                        </div>
-                      </div>
-                      
-                      <div style="display:flex; align-items:center; gap:8px;">
-                        <label for="logo-fav-upload" class="btn btn-secondary btn-sm" style="cursor:pointer; font-size:0.75rem; padding:6px 12px; border-radius: 6px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
-                          <i data-lucide="upload" style="width:14px;height:14px;"></i> Alterar
-                        </label>
-                        <input type="file" id="logo-fav-upload" accept="image/*" class="hidden">
-                        <button class="btn btn-secondary btn-sm btn-icon" id="btn-remove-logo-fav" style="display:none; font-size:0.75rem; padding:6px 10px; border-radius: 6px;">
-                          <i data-lucide="trash-2" style="width:14px;height:14px;color:var(--color-danger);"></i>
-                        </button>
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-            <!-- DANGER ZONE (Full Width or Bottom of Grid) -->
-            <div style="grid-column: 1 / -1; margin-top: 16px;">
-              <div class="card" style="border: 1px solid rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.02);">
-                <div class="card-header" style="border-bottom: 1px solid rgba(239, 68, 68, 0.1);">
-                  <h3 style="color: var(--color-danger); display: flex; align-items: center; gap: 8px;">
-                    <i data-lucide="alert-triangle" style="width:18px;height:18px;"></i> Zona de Perigo: Limpar Banco de Dados
-                  </h3>
-                </div>
-                <div class="card-content text-muted">
-                  <p style="font-size: 0.85rem; line-height: 1.4;">Atenção! Esta ação excluirá permanentemente todos os registros de Ordens, Clientes, Modelos e Fornecedores gravados neste navegador. Não há como reverter sem backup.</p>
-                  <div class="settings-actions" style="margin-top: 16px;">
-                    <button class="btn btn-danger btn-icon" id="reset-db-btn" style="padding: 10px 16px; font-weight: 600;">
-                      <i data-lucide="trash-2"></i> Resetar Todos os Dados
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <!-- ══════════════ END RIGHT COLUMN ══════════════ -->
 
           </div>
         </section>
+
 
       </div>
     </main>
@@ -1057,6 +1049,7 @@
       </div>
       <form id="form-quick-client">
         <input type="hidden" id="quick-client-id">
+
         <div class="form-group">
           <label for="qc-nome">Nome Completo *</label>
           <input type="text" id="qc-nome" required placeholder="Ex: Parana Maquetes">
