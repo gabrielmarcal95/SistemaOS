@@ -1,0 +1,17 @@
+{
+  "name": "AeroPrint3D",
+  "short_name": "AeroPrint3D",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "description": "Sistema de Gestão AeroPrint3D",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

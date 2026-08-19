@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AeroPrint3D - Sistema de Ordens de Serviço</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="manifest" href="manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css?v=2.1.0">
+  <link id="dynamic-favicon" rel="icon" type="image/png" href="">
+</head>
+<body>
+  <!-- App Shell -->
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar no-print">
+      <div class="brand">
+        <div class="logo-icon" id="sidebar-logo-container">
+          <img id="sidebar-logo-img" src="" alt="Logo" style="display:none; width:100%; height:100%; object-fit:contain; border-radius:4px;">
+          <i data-lucide="plane-takeoff" id="sidebar-logo-icon"></i>
+        </div>
+        <div class="brand-text">
+          <h1 id="sidebar-company-name">AeroPrint3D</h1>
+          <span>Painel de Produção</span>
+        </div>
+      </div>
+      <nav class="nav-menu">
+        <div class="nav-group">
+          <button class="nav-btn active" data-target="dashboard">
+            <i data-lucide="layout-dashboard"></i> Dashboard
+          </button>
+        </div>
+        <div class="nav-group">
+          <span class="nav-group-label">Operacional</span>
+          <button class="nav-btn" data-target="producao">
+            <i data-lucide="clipboard-list"></i> Controle de Produção
+          </button>
+          <button class="nav-btn" data-target="ordens">
+            <i data-lucide="file-text"></i> Ordens de Serviço
+          </button>
+          <button class="nav-btn" data-target="pagamentos">
+            <i data-lucide="wallet"></i> Finanças & Pagamentos
+          </button>
+        </div>
+        <div class="nav-group">
+          <span class="nav-group-label">Análise</span>
+          <button class="nav-btn" data-target="relatorios">
+            <i data-lucide="bar-chart-2"></i> Relatórios & Lucros
+          </button>
+        </div>
+        <div class="nav-group">
+          <span class="nav-group-label">Cadastros</span>
+          <button class="nav-btn" data-target="clientes">
+            <i data-lucide="users"></i> Clientes
+          </button>
+          <button class="nav-btn" data-target="modelos">
+            <i data-lucide="package"></i> Modelos 3D
+          </button>
+          <button class="nav-btn" data-target="fornecedores">
+            <i data-lucide="truck"></i> Fornecedores
+          </button>
+        </div>
+        <div class="nav-group">
+          <span class="nav-group-label">Sistema</span>
+          <button class="nav-btn" data-target="configuracoes">
+            <i data-lucide="settings"></i> Backup & Config
+          </button>
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="avatar">G</div>
+          <div>
+            <div class="user-name">Gabriel</div>
+            <div class="user-role">Administrador</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Topbar / Header -->
+      <header class="topbar no-print">
+        <div class="page-title-container">
+          <h2 id="current-page-title">Dashboard</h2>
+          <p id="current-page-subtitle">Visão geral do seu negócio de impressão 3D</p>
+        </div>
+        <div class="topbar-actions">
+          <!-- Bell Alert Button -->
+          <div class="alert-bell-wrapper" id="alert-bell-wrapper">
+            <button class="btn-alert-bell" id="btn-alert-bell" title="Central de Alertas" aria-label="Alertas">
+              <i data-lucide="bell"></i>
+              <span class="alert-badge" id="alert-badge" style="display:none;">0</span>
+            </button>
+            <!-- Alerts Dropdown Panel -->
+            <div class="alerts-panel" id="alerts-panel" style="display:none;">
+              <div class="alerts-panel-header">
+                <span><i data-lucide="bell" style="width:15px;height:15px;"></i> Central de Alertas</span>
+                <button class="btn-close-alerts" id="btn-close-alerts" title="Fechar">&times;</button>
+              </div>
+              <div class="alerts-panel-body" id="alerts-panel-body">
+                <!-- Dynamic alerts rendered by JS -->
+              </div>
+              <div class="alerts-panel-footer">
+                <button class="btn btn-text" id="btn-go-alert-settings" style="font-size:0.8rem; color:var(--text-secondary);">
+                  <i data-lucide="settings" style="width:13px;height:13px;"></i> Configurar Alertas
+                </button>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-icon" id="quick-os-btn">
+            <i data-lucide="plus"></i> Nova OS
+          </button>
+        </div>
+      </header>
+
+      <!-- Content Views -->
+      <div class="content-body">
+        
+        <!-- ================= DASHBOARD VIEW ================= -->
+        <section id="view-dashboard" class="content-view active">
+          <!-- Stat Cards Grid -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon icon-blue">
+                <i data-lucide="file-text"></i>
+              </div>
+              <div class="stat-data">
+                <span class="stat-label">Total de Ordens</span>
+                <h3 id="stat-total-os">0</h3>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon icon-amber">
+                <i data-lucide="clock"></i>
+              </div>
+              <div class="stat-data">
+                <span class="stat-label">Produção Pendente</span>
+                <h3 id="stat-pendente-os">0</h3>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon icon-cyan">
+                <i data-lucide="play"></i>
+              </div>
+              <div class="stat-data">
+                <span class="stat-label">Em Andamento</span>
+                <h3 id="stat-andamento-os">0</h3>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon icon-green">
+                <i data-lucide="check-circle"></i>
+              </div>
+              <div class="stat-data">
+                <span class="stat-label">Finalizados</span>
+                <h3 id="stat-finalizado-os">0</h3>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon icon-emerald">
+                <i data-lucide="dollar-sign"></i>
+              </div>
+              <div class="stat-data">
+                <span class="stat-label">Faturamento Total</span>
+                <h3 id="stat-faturamento">R$ 0,00</h3>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon icon-red">
+                <i data-lucide="alert-circle"></i>
+              </div>
+              <div class="stat-data">
+                <span class="stat-label">A Receber</span>
+                <h3 id="stat-a-receber">R$ 0,00</h3>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Section: Recent Orders & Alerts -->
+          <div class="dashboard-row">
+            <div class="dashboard-col card recent-orders-card">
+              <div class="card-header">
+                <h3>Ordens de Serviço Recentes</h3>
+                <button class="btn btn-text" onclick="switchTab('ordens')">Ver todas</button>
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Código</th>
+                      <th>Cliente</th>
+                      <th>Data</th>
+                      <th>Modelos (Qtd)</th>
+                      <th>Valor Total</th>
+                      <th>Pagamento</th>
+                      <th>Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashboard-recent-orders">
+                    <!-- Dynamic -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="dashboard-col card production-summary-card">
+              <div class="card-header">
+                <h3>Fila de Produção (Itens)</h3>
+              </div>
+              <div class="production-queue-list" id="dashboard-production-queue">
+                <!-- Dynamic list of items in production -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= CONTROLE DE PRODUÇÃO VIEW ================= -->
+        <section id="view-producao" class="content-view">
+          <div class="filter-bar no-print">
+            <div class="search-input">
+              <i data-lucide="search"></i>
+              <input type="text" id="producao-search" placeholder="Buscar por cliente ou código da OS...">
+            </div>
+            <div class="checkbox-group" style="margin-left: 10px;">
+              <input type="checkbox" id="producao-filter-ativas" checked>
+              <label for="producao-filter-ativas" style="font-size: 0.9rem; font-weight: 500; cursor: pointer;">Ocultar ordens 100% finalizadas</label>
+            </div>
+          </div>
+
+          <div class="production-cards-grid" id="producao-cards-container">
+            <!-- Dynamic cards rendered by JS -->
+          </div>
+        </section>
+
+        <!-- ================= FINANÇAS & PAGAMENTOS VIEW ================= -->
+        <section id="view-pagamentos" class="content-view">
+          <!-- Top Credits Row -->
+          <div class="card no-print">
+            <div class="card-header">
+              <h3>Saldos de Crédito Acumulados</h3>
+            </div>
+            <div class="client-credits-grid" id="client-credits-list" style="display: flex; gap: 12px; flex-wrap: wrap;">
+              <!-- Cards of clients who have positive credits -->
+            </div>
+          </div>
+
+          <div class="filter-bar no-print">
+            <div class="search-input">
+              <i data-lucide="search"></i>
+              <input type="text" id="pagamento-search" placeholder="Buscar no histórico por cliente...">
+            </div>
+            <button class="btn btn-primary btn-icon" id="new-deposit-btn">
+              <i data-lucide="plus"></i> Lançar Depósito / Pagamento
+            </button>
+          </div>
+
+          <div class="card no-print">
+            <div class="card-header">
+              <h3>Histórico de Recebimentos e Depósitos</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Data</th>
+                    <th>Quem Pagou</th>
+                    <th>Valor do Depósito</th>
+                    <th>Crédito Gerado</th>
+                    <th>Alocações Efetuadas</th>
+                    <th>Observação</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="pagamentos-table-body">
+                  <!-- Dynamic -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= RELATÓRIOS & LUCRO VIEW ================= -->
+        <section id="view-relatorios" class="content-view">
+
+          <!-- Tab Navigation -->
+          <div class="report-tab-bar no-print">
+            <button class="report-tab-btn active" data-tab="client">
+              <i data-lucide="users"></i> Relatório de Cliente
+            </button>
+            <button class="report-tab-btn" data-tab="profit">
+              <i data-lucide="bar-chart-2"></i> Demonstrativo de Lucros
+            </button>
+          </div>
+
+          <!-- Tab Panel: Client Report -->
+          <div class="report-tab-panel active" id="tab-panel-client">
+            <div class="card">
+              <div class="card-header">
+                <h3>Relatório de Pedidos por Cliente</h3>
+              </div>
+              <div class="card-content">
+                <p class="text-muted" style="margin-bottom: 15px;">Gere e imprima um extrato detalhado de todas as ordens de um cliente, agrupadas por subcliente, contendo modelos, situação física, financeira e custos.</p>
+                <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; align-items: end;">
+                  <div class="form-group" style="min-width: 160px;">
+                    <label for="rep-client-select">Selecione o Cliente</label>
+                    <select id="rep-client-select">
+                      <option value="">Selecione um Cliente</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="rep-status-select">Situação Pagamento</label>
+                    <select id="rep-status-select">
+                      <option value="">Todos os status</option>
+                      <option value="Pendente">Pendentes</option>
+                      <option value="Pago Parcial">Pago Parcial</option>
+                      <option value="Pago">Quitados</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="rep-prod-status-select">Situação Produção</label>
+                    <select id="rep-prod-status-select">
+                      <option value="">Todas as situações</option>
+                      <option value="Finalizado">Apenas Finalizados</option>
+                      <option value="Em Andamento">Em Andamento</option>
+                      <option value="Pendente">Pendentes</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="rep-date-start">Data Início</label>
+                    <input type="date" id="rep-date-start">
+                  </div>
+                  <div class="form-group">
+                    <label for="rep-date-end">Data Fim</label>
+                    <input type="date" id="rep-date-end">
+                  </div>
+                  <div class="form-group" style="min-width: 160px;">
+                    <label for="rep-layout-select">Formato</label>
+                    <select id="rep-layout-select">
+                      <option value="detalhado">Visual Detalhado (OSs)</option>
+                      <option value="planilha" selected>Visual Planilha (OSs)</option>
+                      <option value="extrato">Extrato Financeiro (Depósitos & Saldos)</option>
+                    </select>
+                  </div>
+                  <button class="btn btn-primary" id="btn-generate-client-report" style="align-self: end; height: 38px;">Gerar Relatório</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Printable Client Report Result -->
+            <div class="card hidden" id="client-report-result">
+              <div class="card-header flex-header no-print">
+                <h3>Resultado do Relatório de Clientes</h3>
+                <div style="display:flex; gap:10px;">
+                  <button class="btn btn-secondary btn-icon" id="btn-export-client-csv-report" title="Exportar para Excel (CSV)" style="display:none; color: var(--color-success); border-color: rgba(34,197,94,0.3);">
+                    <i data-lucide="download-cloud"></i> Exportar CSV
+                  </button>
+                  <button class="btn btn-secondary btn-icon" id="btn-print-client-report">
+                    <i data-lucide="printer"></i> Imprimir este Relatório
+                  </button>
+                </div>
+              </div>
+              <div class="print-layout-container" id="client-report-print-content">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Panel: Profit Report -->
+          <div class="report-tab-panel" id="tab-panel-profit">
+            <div class="card">
+              <div class="card-header flex-header">
+                <h3>Demonstrativo de Custos & Lucro por OS</h3>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                  <div class="search-input" style="width: 260px;">
+                    <i data-lucide="search"></i>
+                    <input type="text" id="rep-profit-search" placeholder="Filtrar por código ou cliente...">
+                  </div>
+                  <button class="btn btn-secondary btn-icon" id="btn-print-profit-report">
+                    <i data-lucide="printer"></i> Imprimir
+                  </button>
+                </div>
+              </div>
+              <p class="text-muted" style="margin-bottom: 0; font-size: 0.82rem;">Acompanhe o faturamento, os gastos de insumos/terceirizações e o lucro líquido com a margem de cada OS cadastrada.</p>
+            </div>
+
+            <div class="card no-print" style="margin-bottom: 15px;">
+              <div class="card-content" style="padding: 14px 18px;">
+                <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+                  <div class="form-group" style="margin: 0; min-width: 140px;">
+                    <label for="profit-date-start" style="font-size: 0.72rem; margin-bottom: 4px;">Data Início</label>
+                    <input type="date" id="profit-date-start" style="padding: 6px 10px; font-size: 0.82rem; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; color: #fff; width: 100%;">
+                  </div>
+                  <div class="form-group" style="margin: 0; min-width: 140px;">
+                    <label for="profit-date-end" style="font-size: 0.72rem; margin-bottom: 4px;">Data Fim</label>
+                    <input type="date" id="profit-date-end" style="padding: 6px 10px; font-size: 0.82rem; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; color: #fff; width: 100%;">
+                  </div>
+                  <button class="btn btn-secondary btn-sm" id="btn-clear-profit-dates" style="align-self: end; height: 32px; padding: 0 12px; font-size: 0.8rem;">
+                    Limpar Datas
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Financial Profit Table Result -->
+            <div class="card" id="profit-report-result">
+              <div class="card-header flex-header">
+                <h3>Lucros e Gastos por Ordem de Serviço</h3>
+              </div>
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>OS (Data)</th>
+                      <th>Cliente (Subcliente)</th>
+                      <th>Origem</th>
+                      <th>Faturamento (Recebido / Total)</th>
+                      <th>Gastos (Produção + Terceiros)</th>
+                      <th>Lucro Líquido</th>
+                      <th>Margem (%)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="profit-table-body">
+                    <!-- Rendered dynamically -->
+                  </tbody>
+                  <tfoot>
+                    <tr style="font-weight: 800; border-top: 2px solid var(--border-color); background-color: rgba(255,255,255,0.03);">
+                      <td colspan="3" style="padding: 16px;">Totais Gerais:</td>
+                      <td id="tot-profit-faturamento" style="padding: 16px; color: var(--text-main);">R$ 0,00</td>
+                      <td id="tot-profit-gastos" style="padding: 16px; color: var(--color-danger);">R$ 0,00</td>
+                      <td id="tot-profit-lucro" style="padding: 16px; color: var(--color-success);">R$ 0,00</td>
+                      <td id="tot-profit-margem" style="padding: 16px; color: var(--border-focus);">0%</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ================= ORDENS DE SERVIÇO VIEW ================= -->
+        <section id="view-ordens" class="content-view">
+          <div class="filter-bar no-print">
+            <div class="search-input">
+              <i data-lucide="search"></i>
+              <input type="text" id="os-search" placeholder="Buscar por cliente ou código...">
+            </div>
+            <select id="os-filter-pagamento">
+              <option value="">Status de Pagamento (Todos)</option>
+              <option value="Pendente">Pendente</option>
+              <option value="Pago Parcial">Pago Parcial</option>
+              <option value="Pago">Pago</option>
+            </select>
+            <select id="os-filter-producao">
+              <option value="">Status de Produção (Todos)</option>
+              <option value="Pendente">Pendente</option>
+              <option value="Em Andamento">Em Andamento</option>
+              <option value="Finalizado">Finalizado</option>
+            </select>
+            <button class="btn btn-primary btn-icon" id="new-os-btn">
+              <i data-lucide="plus"></i> Nova Ordem
+            </button>
+          </div>
+
+          <div class="card no-print">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Ordem / Cliente</th>
+                    <th>Data</th>
+                    <th>Modelos</th>
+                    <th>Valor Total</th>
+                    <th>Pagamento</th>
+                    <th>Produção</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="os-table-body">
+                  <!-- Dynamic -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Form View (Launches OS) - Initially hidden, overlays on tab or triggers drawer -->
+          <div class="os-form-container card hidden" id="os-form-card">
+            <div class="card-header flex-header">
+              <h3 id="os-form-title">Nova Ordem de Serviço</h3>
+              <button class="btn btn-icon-only btn-text" id="close-os-form-btn">
+                <i data-lucide="x"></i>
+              </button>
+            </div>
+
+            <div id="os-locked-warning" style="display: none; background: hsla(30, 90%, 50%, 0.1); border: 1px solid hsla(30, 90%, 50%, 0.4); border-radius: 8px; padding: 12px 16px; margin: 0 20px 20px; color: hsl(30, 90%, 62%); font-size: 0.9rem; align-items: center; gap: 8px;">
+              <i data-lucide="lock" style="width: 18px; height: 18px;"></i>
+              <div id="os-locked-warning-text">
+                <strong>Ordem de Serviço Bloqueada</strong><br>
+                Esta OS já possui pagamentos. Para alterar valores, adicionar ou remover itens, mude o Estado de Pagamento para <strong>Pendente</strong>.
+              </div>
+            </div>
+            <form id="os-form">
+              <input type="hidden" id="os-edit-id">
+              <div class="os-form-layout">
+
+                <!-- LEFT COLUMN: All form fields -->
+                <div class="os-form-main">
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label for="os-cliente">Cliente *</label>
+                      <div class="input-group">
+                        <select id="os-cliente" required>
+                          <option value="">Selecione um Cliente</option>
+                        </select>
+                        <button type="button" class="btn btn-secondary btn-square-icon" id="quick-add-client-btn" title="Cadastrar Cliente">
+                          <i data-lucide="user-plus"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="os-data">Data da Ordem *</label>
+                      <input type="date" id="os-data" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="os-data-limite" style="display:flex;align-items:center;gap:6px;">
+                        <i data-lucide="alarm-clock" style="width:13px;height:13px;color:var(--color-warning);"></i>
+                        Data Limite / Entrega
+                        <span style="font-size:0.72rem;color:var(--text-secondary);font-weight:400;">(opcional)</span>
+                      </label>
+                      <input type="date" id="os-data-limite">
+                    </div>
+                    <div class="form-group">
+                      <label for="os-pagamento">Estado de Pagamento *</label>
+                      <select id="os-pagamento" required onchange="toggleOSFormLock()">
+                        <option value="Pendente">Pendente</option>
+                        <option value="Pago Parcial">Pago Parcial</option>
+                        <option value="Pago">Pago</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-grid grid-3">
+                    <div class="form-group">
+                      <label for="os-origem">Origem do Pedido *</label>
+                      <select id="os-origem" required>
+                        <option value="WhatsApp" selected>WhatsApp (Sinal 50% Pix)</option>
+                        <option value="Site">Site</option>
+                        <option value="Empresa/Parceiro">Empresa / Subclientes</option>
+                      </select>
+                    </div>
+                    <div class="form-group col-span-2">
+                      <label for="os-subcliente">Subcliente / Detalhe (Opcional)</label>
+                      <input type="text" id="os-subcliente" list="subclientes-list" placeholder="Ex: Azul, Embraer (Para agrupar pedidos de parceiros)">
+                      <datalist id="subclientes-list"></datalist>
+                    </div>
+                  </div>
+
+                  <!-- Third-party service -->
+                  <div class="section-divider">Serviços de Terceiros (Pintura, etc.)</div>
+                  <div class="form-grid grid-3">
+                    <div class="form-group">
+                      <label for="os-fornecedor">Fornecedor de Terceiros</label>
+                      <div class="input-group">
+                        <select id="os-fornecedor">
+                          <option value="">Sem Terceirização</option>
+                        </select>
+                        <button type="button" class="btn btn-secondary btn-square-icon" id="quick-add-supplier-btn" title="Cadastrar Fornecedor">
+                          <i data-lucide="plus"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="form-group col-span-2">
+                      <label for="os-valor-terceiros">Valor de Serviços de Terceiros (R$)</label>
+                      <input type="number" id="os-valor-terceiros" step="0.01" min="0" placeholder="0,00" value="0.00">
+                    </div>
+                  </div>
+
+                  <!-- Frete -->
+                  <div class="section-divider">Frete / Envio</div>
+                  <div class="form-grid grid-3">
+                    <div class="form-group">
+                      <label for="os-valor-frete">Valor do Frete (R$)</label>
+                      <input type="number" id="os-valor-frete" step="0.01" min="0" placeholder="0,00" value="0.00">
+                    </div>
+                    <div class="form-group col-span-2">
+                      <label for="os-responsavel-frete">Responsável pelo Frete</label>
+                      <select id="os-responsavel-frete">
+                        <option value="minha-conta">🔵 Por minha conta (não cobra do cliente)</option>
+                        <option value="cliente">🟢 Pago pelo cliente (soma ao total)</option>
+                        <option value="dividido">🟡 Dividido 50/50 (metade de cada)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Items List -->
+                  <div class="section-divider">Modelos / Aeronaves da Ordem *</div>
+                  <div class="os-items-list" id="os-items-container">
+                    <!-- Dynamic item rows will be inserted here -->
+                  </div>
+                  <div style="margin-top: 12px; margin-bottom: 8px;">
+                    <button type="button" class="btn btn-secondary btn-icon" id="add-item-btn">
+                      <i data-lucide="plus"></i> Adicionar Modelo
+                    </button>
+                  </div>
+
+                  <!-- Observações -->
+                  <div class="form-group" style="margin-top: 16px;">
+                    <label for="os-observacoes">Observações Internas / Anotações</label>
+                    <textarea id="os-observacoes" placeholder="Adicione observações sobre a ordem de serviço..." rows="3"></textarea>
+                  </div>
+                </div>
+
+                <!-- RIGHT COLUMN: Sticky financial summary -->
+                <div class="os-form-sidebar">
+                  <div class="os-summary-sticky">
+                    <div class="os-summary-section">
+                      <p class="os-summary-title">Resumo Financeiro</p>
+                      <div class="summary-row">
+                        <span>Subtotal Modelos:</span>
+                        <span id="summary-subtotal">R$ 0,00</span>
+                      </div>
+                      <div class="summary-row">
+                        <span>Custo Arquivos Novos:</span>
+                        <span id="summary-arquivos">R$ 0,00</span>
+                      </div>
+                      <div class="summary-row">
+                        <span>Serviços Terceiros:</span>
+                        <span id="summary-terceiros">R$ 0,00</span>
+                      </div>
+                      <div class="summary-row" id="summary-frete-row" style="display:none;">
+                        <span id="summary-frete-label">Frete (cliente):</span>
+                        <span id="summary-frete">R$ 0,00</span>
+                      </div>
+                      <div class="summary-row" style="border-top: 1px dashed var(--border-subtle); padding-top: 8px; margin-top: 4px;">
+                        <span>Custo/Investimento Total:</span>
+                        <span id="summary-custo-total" style="color: var(--color-danger); font-weight: 600;">R$ 0,00</span>
+                      </div>
+                      <div class="summary-row">
+                        <span>Lucro Estimado:</span>
+                        <span id="summary-lucro" style="font-weight: 600;">R$ 0,00</span>
+                      </div>
+                      <div class="summary-row">
+                        <span>Margem Estimada:</span>
+                        <span id="summary-margem" style="font-weight: 600;">0,0%</span>
+                      </div>
+                      <div class="summary-row total-row">
+                        <span>Valor Total da OS:</span>
+                        <span id="summary-total">R$ 0,00</span>
+                      </div>
+                    </div>
+                    <div class="form-actions">
+                      <button type="submit" class="btn btn-primary">Salvar Ordem de Serviço</button>
+                      <button type="button" class="btn btn-secondary" id="cancel-os-btn">Cancelar</button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- ================= CLIENTES VIEW ================= -->
+        <section id="view-clientes" class="content-view">
+          <div class="filter-bar">
+            <div class="search-input">
+              <i data-lucide="search"></i>
+              <input type="text" id="client-search" placeholder="Buscar clientes...">
+            </div>
+            <button class="btn btn-primary btn-icon" id="new-client-btn">
+              <i data-lucide="plus"></i> Novo Cliente
+            </button>
+          </div>
+
+          <div class="card">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Telefone</th>
+                    <th>E-mail</th>
+                    <th>Data Cadastro</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="client-table-body">
+                  <!-- Dynamic -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= MODELOS VIEW ================= -->
+        <section id="view-modelos" class="content-view">
+          <div class="filter-bar">
+            <div class="search-input">
+              <i data-lucide="search"></i>
+              <input type="text" id="model-search" placeholder="Buscar modelos...">
+            </div>
+            <button class="btn btn-primary btn-icon" id="new-model-btn">
+              <i data-lucide="plus"></i> Novo Modelo
+            </button>
+          </div>
+
+          <div class="card">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th onclick="sortModels('nome')" style="cursor:pointer;" id="th-sort-nome" title="Ordenar por Nome">Aeronave <i data-lucide="chevron-down" style="width:14px; height:14px; margin-left:4px; vertical-align:middle;" class="sort-icon hidden"></i></th>
+                    <th>Tamanhos Cadastrados</th>
+                    <th onclick="sortModels('valorArquivo')" style="cursor:pointer;" id="th-sort-valorArquivo" title="Ordenar por Valor Arquivo">Preço do Arquivo 3D <i data-lucide="chevron-down" style="width:14px; height:14px; margin-left:4px; vertical-align:middle;" class="sort-icon hidden"></i></th>
+                    <th class="text-right">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="model-table-body">
+                  <!-- Dynamic -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= FORNECEDORES VIEW ================= -->
+        <section id="view-fornecedores" class="content-view">
+          <div class="filter-bar">
+            <div class="search-input">
+              <i data-lucide="search"></i>
+              <input type="text" id="supplier-search" placeholder="Buscar fornecedores...">
+            </div>
+            <button class="btn btn-primary btn-icon" id="new-supplier-btn">
+              <i data-lucide="plus"></i> Novo Fornecedor
+            </button>
+          </div>
+
+          <div class="card">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Nome da Empresa</th>
+                    <th>Contato</th>
+                    <th>Telefone</th>
+                    <th>E-mail / Serviço</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="supplier-table-body">
+                  <!-- Dynamic -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= CONFIGURAÇÕES E BACKUP VIEW ================= -->
+        <section id="view-configuracoes" class="content-view">
+          <div style="margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <h2 style="font-family: var(--font-secondary); font-size: 1.8rem; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 10px;">
+              <i data-lucide="settings" style="color: var(--border-focus); width: 26px; height: 26px;"></i>
+              Configurações do Sistema
+            </h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 6px;">Gerencie suas preferências, faça backup dos seus dados e personalize a identidade visual da plataforma.</p>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px; align-items: start;">
+            
+            <!-- LEFT COLUMN: Data & Automation -->
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+              
+              <!-- DATA & BACKUP (Combined) -->
+              <div class="card" style="border-top: 3px solid var(--color-success);">
+                <div class="card-header">
+                  <h3 style="display:flex;align-items:center;gap:8px;">
+                    <i data-lucide="database" style="color:var(--color-success);width:18px;height:18px;"></i>
+                    Gerenciamento de Dados
+                  </h3>
+                </div>
+                <div class="card-content">
+                  <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 18px; line-height: 1.4;">O sistema funciona localmente. Realize backups periódicos para proteger seus dados contra limpezas de histórico do navegador.</p>
+                  
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <!-- Export -->
+                    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; text-align: center; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.04)'; this.style.borderColor='var(--color-success)';" onmouseout="this.style.background='rgba(255,255,255,0.02)'; this.style.borderColor='rgba(255,255,255,0.05)';">
+                      <div style="width: 44px; height: 44px; border-radius: 12px; background: hsla(150, 80%, 40%, 0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto;">
+                        <i data-lucide="download-cloud" style="color: var(--color-success); width: 22px; height: 22px;"></i>
+                      </div>
+                      <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 6px; font-weight: 600;">Backup Manual</h4>
+                      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.4;">Baixe um arquivo contendo todas as suas Ordens e Clientes.</p>
+                      <button class="btn btn-primary btn-sm" id="export-backup-btn" style="width: 100%; justify-content: center; background: var(--color-success); color: #fff; border: none; padding: 8px;">Exportar (.JSON)</button>
+                    </div>
+                    
+                    <!-- Import -->
+                    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; text-align: center; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.04)'; this.style.borderColor='var(--border-focus)';" onmouseout="this.style.background='rgba(255,255,255,0.02)'; this.style.borderColor='rgba(255,255,255,0.05)';">
+                      <div style="width: 44px; height: 44px; border-radius: 12px; background: hsla(220, 80%, 60%, 0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto;">
+                        <i data-lucide="upload-cloud" style="color: var(--border-focus); width: 22px; height: 22px;"></i>
+                      </div>
+                      <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 6px; font-weight: 600;">Restaurar Dados</h4>
+                      <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.4;">Carregue um arquivo para substituir os dados atuais.</p>
+                      
+                      <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <label for="import-backup-file" class="btn btn-secondary btn-sm" style="width: 100%; justify-content: center; cursor: pointer; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 8px; font-size: 0.75rem;">
+                          <i data-lucide="folder-open" style="width:14px;height:14px;"></i> Procurar...
+                        </label>
+                        <input type="file" id="import-backup-file" accept=".json" class="hidden">
+                        <button class="btn btn-primary btn-sm" id="import-backup-btn" disabled style="width: 100%; justify-content: center; padding: 8px; font-size: 0.75rem;">Confirmar</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="text-align: center; margin-top: 10px;">
+                    <span id="import-file-name" style="font-size: 0.75rem; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 12px; display: inline-block;">Nenhum arquivo selecionado</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- IA CONFIG -->
+              <div class="card" style="border-top: 3px solid hsl(42, 95%, 60%);">
+                <div class="card-header">
+                  <h3 style="display:flex;align-items:center;gap:8px;">
+                    <i data-lucide="cpu" style="color:hsl(42, 95%, 60%);width:18px;height:18px;"></i>
+                    Inteligência Artificial (OpenAI)
+                  </h3>
+                </div>
+                <div class="card-content text-muted">
+                  <p style="font-size: 0.85rem; line-height: 1.5; margin-bottom: 14px;">Habilite a automação com IA para ler arquivos ou buscar dimensões automaticamente na internet durante a criação de novos modelos.</p>
+                  
+                  <div style="background: linear-gradient(135deg, rgba(241, 160, 0, 0.08) 0%, rgba(241, 160, 0, 0.02) 100%); border: 1px solid rgba(241, 160, 0, 0.2); border-radius: 10px; padding: 14px; font-size: 0.8rem; line-height: 1.5;">
+                    <strong style="color: hsl(42, 95%, 60%); display: flex; align-items: center; gap: 6px; margin-bottom: 8px; font-size: 0.85rem;">
+                      <i data-lucide="key" style="width:14px;height:14px;"></i> Como configurar:
+                    </strong>
+                    <ol style="margin-left: 20px; display: flex; flex-direction: column; gap: 4px; color: var(--text-secondary);">
+                      <li>Acesse a <a href="https://platform.openai.com/api-keys" target="_blank" style="color: var(--border-focus); text-decoration: none; font-weight: 500; border-bottom: 1px dashed var(--border-focus);">OpenAI Platform</a>.</li>
+                      <li>Clique em <strong>+ Create new secret key</strong>.</li>
+                      <li>Copie a chave gerada (ela começa com <code>sk-</code>).</li>
+                      <li>Adicione um saldo mínimo na aba <em>Billing</em> (custo irrisório por uso).</li>
+                    </ol>
+                  </div>
+
+                  <div class="form-group" style="margin-top: 16px;">
+                    <label for="settings-openai-key" style="color: var(--text-main); font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 6px;">
+                      <i data-lucide="lock" style="width:14px;height:14px;color:var(--text-muted);"></i> Chave de API Secreta
+                    </label>
+                    <div style="display:flex; gap:10px; margin-top: 8px;">
+                      <input type="password" id="settings-openai-key" placeholder="sk-proj-..." style="flex:1; padding: 10px 14px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-family: monospace; font-size: 0.85rem; transition: all 0.2s;" onfocus="this.style.borderColor='hsl(42, 95%, 60%)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+                      <button class="btn btn-primary btn-icon" id="btn-save-openai-key" style="background: hsl(42, 95%, 60%); color: #000; border: none; font-weight: 600;">
+                        <i data-lucide="save" style="color:#000;"></i> Salvar
+                      </button>
+                      <button class="btn btn-secondary btn-icon" id="btn-delete-openai-key" title="Remover chave" style="padding: 0 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                        <i data-lucide="trash-2" style="color: var(--color-danger);"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ALERT SETTINGS CARD -->
+              <div class="card" id="card-alert-settings" style="border-top: 3px solid var(--color-warning);">
+                <div class="card-header">
+                  <h3 style="display:flex;align-items:center;gap:8px;">
+                    <i data-lucide="bell-ring" style="color:var(--color-warning);width:18px;height:18px;"></i>
+                    Configurações de Alertas
+                  </h3>
+                </div>
+                <div class="card-content" id="alert-settings-content">
+                  <!-- Rendered by JS -->
+                </div>
+              </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: Personalization -->
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+              
+              <!-- IDENTIDADE VISUAL -->
+              <div class="card" id="card-logo-settings" style="border-top: 3px solid var(--border-focus);">
+                <div class="card-header">
+                  <h3 style="display:flex;align-items:center;gap:8px;">
+                    <i data-lucide="palette" style="color:var(--border-focus);width:18px;height:18px;"></i>
+                    Personalização Visual
+                  </h3>
+                </div>
+                <div class="card-content text-muted">
+
+                  <!-- Company Name -->
+                  <div class="form-group" style="margin-bottom:28px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 16px; border-radius: 12px;">
+                    <label style="font-weight:600; color:var(--text-main); font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
+                      <i data-lucide="building-2" style="width:16px;height:16px;color:var(--border-focus);"></i> Nome da Empresa
+                    </label>
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; margin-bottom: 12px;">Usado em relatórios e cabeçalhos do sistema.</p>
+                    <div style="display:flex;gap:10px;">
+                      <input type="text" id="input-company-name" placeholder="Ex: AeroPrint3D" style="flex:1; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff; font-size: 0.9rem;">
+                      <button class="btn btn-primary" id="btn-save-company-name">
+                        Salvar
+                      </button>
+                    </div>
+                  </div>
+
+                  <h4 style="font-size: 0.95rem; color: #fff; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="image" style="width: 18px; height: 18px;"></i> Logos e Ícones
+                  </h4>
+
+                  <div style="display:grid; grid-template-columns: 1fr; gap:16px;">
+
+                    <!-- === SIDEBAR LOGO === -->
+                    <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:12px; padding:16px; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background='rgba(255,255,255,0.02)'">
+                      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                          <p style="font-weight:600; color:var(--text-main); margin-bottom:4px; display:flex; align-items:center; gap:6px; font-size: 0.85rem;">
+                            <i data-lucide="layout-sidebar" style="width:15px;height:15px; color:var(--border-focus);"></i> Logo Principal (Menu Lateral)
+                          </p>
+                          <p style="font-size:0.75rem; color: var(--text-muted); margin-bottom:14px; max-width: 200px; line-height: 1.4;">Exibida permanentemente no canto superior esquerdo.</p>
+                        </div>
+                        <div id="logo-sidebar-preview-box" style="width:64px;height:64px;border:1px solid rgba(255,255,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);flex-shrink:0;overflow:hidden; box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);">
+                          <img id="logo-sidebar-preview-img" src="" alt="" style="display:none;max-width:100%;max-height:100%;object-fit:contain;">
+                          <i data-lucide="image-plus" style="color:rgba(255,255,255,0.2);width:24px;height:24px;" id="logo-sidebar-preview-placeholder"></i>
+                        </div>
+                      </div>
+                      
+                      <div style="display:flex; align-items:center; gap:8px;">
+                        <label for="logo-sidebar-upload" class="btn btn-primary btn-sm" style="cursor:pointer; font-size:0.75rem; padding:6px 12px; border-radius: 6px;">
+                          <i data-lucide="upload" style="width:14px;height:14px;"></i> Alterar Logo
+                        </label>
+                        <input type="file" id="logo-sidebar-upload" accept="image/*" class="hidden">
+                        <button class="btn btn-secondary btn-sm btn-icon" id="btn-remove-logo-sidebar" style="display:none; font-size:0.75rem; padding:6px 10px; border-radius: 6px;">
+                          <i data-lucide="trash-2" style="width:14px;height:14px;color:var(--color-danger);"></i>
+                        </button>
+                      </div>
+
+                      <!-- BG Options -->
+                      <div id="logo-bg-options" style="display:none; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.05); border-radius:8px; padding:10px 12px; margin-top: 14px;">
+                        <div style="display:flex; justify-content: space-between; align-items:center; flex-wrap:wrap; gap: 10px;">
+                          <span style="font-size:0.75rem; font-weight:600; color:var(--text-secondary);">Fundo da imagem:</span>
+                          <div style="display: flex; gap: 12px;">
+                            <label style="display:flex; align-items:center; gap:5px; font-size:0.75rem; cursor:pointer; color: #fff;">
+                              <input type="radio" name="logo-bg-mode" value="color" id="logo-bg-color-opt" checked> Cor
+                            </label>
+                            <input type="color" id="logo-bg-color-picker" value="#f1a000" style="width:24px;height:24px;border:none;border-radius:4px;cursor:pointer;padding:0;background:none;">
+                            <div style="width: 1px; background: rgba(255,255,255,0.1); margin: 0 4px;"></div>
+                            <label style="display:flex; align-items:center; gap:5px; font-size:0.75rem; cursor:pointer; color: #fff;">
+                              <input type="radio" name="logo-bg-mode" value="none" id="logo-bg-none-opt"> Transparente
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- === PRINT LOGO === -->
+                    <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:12px; padding:16px; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background='rgba(255,255,255,0.02)'">
+                      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                          <p style="font-weight:600; color:var(--text-main); margin-bottom:4px; display:flex; align-items:center; gap:6px; font-size: 0.85rem;">
+                            <i data-lucide="printer" style="width:15px;height:15px; color:var(--border-focus);"></i> Logo para Impressão
+                          </p>
+                          <p style="font-size:0.75rem; color: var(--text-muted); margin-bottom:14px; max-width: 200px; line-height: 1.4;">Usada no cabeçalho das Ordens de Serviço (PDF).</p>
+                        </div>
+                        <div id="logo-print-preview-box" style="width:64px;height:64px;border:1px solid rgba(255,255,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);flex-shrink:0;overflow:hidden;">
+                          <img id="logo-print-preview-img" src="" alt="" style="display:none;max-width:100%;max-height:100%;object-fit:contain;">
+                          <i data-lucide="image-plus" style="color:rgba(255,255,255,0.2);width:24px;height:24px;" id="logo-print-preview-placeholder"></i>
+                        </div>
+                      </div>
+                      
+                      <div style="display:flex; align-items:center; gap:8px;">
+                        <label for="logo-print-upload" class="btn btn-secondary btn-sm" style="cursor:pointer; font-size:0.75rem; padding:6px 12px; border-radius: 6px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                          <i data-lucide="upload" style="width:14px;height:14px;"></i> Alterar
+                        </label>
+                        <input type="file" id="logo-print-upload" accept="image/*" class="hidden">
+                        <button class="btn btn-secondary btn-sm btn-icon" id="btn-remove-logo-print" style="display:none; font-size:0.75rem; padding:6px 10px; border-radius: 6px;">
+                          <i data-lucide="trash-2" style="width:14px;height:14px;color:var(--color-danger);"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- === FAVICON === -->
+                    <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:12px; padding:16px; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background='rgba(255,255,255,0.02)'">
+                      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                          <p style="font-weight:600; color:var(--text-main); margin-bottom:4px; display:flex; align-items:center; gap:6px; font-size: 0.85rem;">
+                            <i data-lucide="globe" style="width:15px;height:15px; color:var(--border-focus);"></i> Favicon do Navegador
+                          </p>
+                          <p style="font-size:0.75rem; color: var(--text-muted); margin-bottom:14px; max-width: 200px; line-height: 1.4;">Miniatura que aparece na aba. Recomendado: PNG quadrado.</p>
+                        </div>
+                        <div id="logo-fav-preview-box" style="width:48px;height:48px;border:1px solid rgba(255,255,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);flex-shrink:0;overflow:hidden;">
+                          <img id="logo-fav-preview-img" src="" alt="" style="display:none;max-width:100%;max-height:100%;object-fit:contain;">
+                          <i data-lucide="image-plus" style="color:rgba(255,255,255,0.2);width:20px;height:20px;" id="logo-fav-preview-placeholder"></i>
+                        </div>
+                      </div>
+                      
+                      <div style="display:flex; align-items:center; gap:8px;">
+                        <label for="logo-fav-upload" class="btn btn-secondary btn-sm" style="cursor:pointer; font-size:0.75rem; padding:6px 12px; border-radius: 6px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                          <i data-lucide="upload" style="width:14px;height:14px;"></i> Alterar
+                        </label>
+                        <input type="file" id="logo-fav-upload" accept="image/*" class="hidden">
+                        <button class="btn btn-secondary btn-sm btn-icon" id="btn-remove-logo-fav" style="display:none; font-size:0.75rem; padding:6px 10px; border-radius: 6px;">
+                          <i data-lucide="trash-2" style="width:14px;height:14px;color:var(--color-danger);"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- DANGER ZONE (Full Width or Bottom of Grid) -->
+            <div style="grid-column: 1 / -1; margin-top: 16px;">
+              <div class="card" style="border: 1px solid rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.02);">
+                <div class="card-header" style="border-bottom: 1px solid rgba(239, 68, 68, 0.1);">
+                  <h3 style="color: var(--color-danger); display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="alert-triangle" style="width:18px;height:18px;"></i> Zona de Perigo: Limpar Banco de Dados
+                  </h3>
+                </div>
+                <div class="card-content text-muted">
+                  <p style="font-size: 0.85rem; line-height: 1.4;">Atenção! Esta ação excluirá permanentemente todos os registros de Ordens, Clientes, Modelos e Fornecedores gravados neste navegador. Não há como reverter sem backup.</p>
+                  <div class="settings-actions" style="margin-top: 16px;">
+                    <button class="btn btn-danger btn-icon" id="reset-db-btn" style="padding: 10px 16px; font-weight: 600;">
+                      <i data-lucide="trash-2"></i> Resetar Todos os Dados
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ================= OVERLAYS & MODALS ================= -->
+
+  <!-- 1. MODAL DE CADASTRO RÁPIDO DE CLIENTE -->
+  <div class="modal-overlay" id="modal-client" data-no-backdrop="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-client-title">Novo Cliente</h3>
+        <button class="btn-close-modal"><i data-lucide="x"></i></button>
+      </div>
+      <form id="form-quick-client">
+        <input type="hidden" id="quick-client-id">
+        <div class="form-group">
+          <label for="qc-nome">Nome Completo *</label>
+          <input type="text" id="qc-nome" required placeholder="Ex: Parana Maquetes">
+        </div>
+        <div class="form-group">
+          <label for="qc-telefone">Telefone</label>
+          <input type="text" id="qc-telefone" placeholder="Ex: (41) 99999-9999">
+        </div>
+        <div class="form-group">
+          <label for="qc-email">E-mail</label>
+          <input type="email" id="qc-email" placeholder="Ex: contato@empresa.com">
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary btn-close-modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar Cliente</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. MODAL DE CADASTRO RÁPIDO DE FORNECEDOR -->
+  <div class="modal-overlay" id="modal-supplier" data-no-backdrop="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-supplier-title">Novo Fornecedor</h3>
+        <button class="btn-close-modal"><i data-lucide="x"></i></button>
+      </div>
+      <form id="form-quick-supplier">
+        <input type="hidden" id="quick-supplier-id">
+        <div class="form-group">
+          <label for="qs-nome">Nome do Fornecedor *</label>
+          <input type="text" id="qs-nome" required placeholder="Ex: Pinturas Silva">
+        </div>
+        <div class="form-group">
+          <label for="qs-contato">Pessoa de Contato</label>
+          <input type="text" id="qs-contato" placeholder="Ex: Carlos">
+        </div>
+        <div class="form-group">
+          <label for="qs-telefone">Telefone</label>
+          <input type="text" id="qs-telefone" placeholder="Ex: (41) 98888-8888">
+        </div>
+        <div class="form-group">
+          <label for="qs-servico">E-mail ou Tipo de Serviço</label>
+          <input type="text" id="qs-servico" placeholder="Ex: Pintura, Polimento, etc.">
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary btn-close-modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar Fornecedor</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. MODAL DE CADASTRO RÁPIDO DE MODELO -->
+  <div class="modal-overlay" id="modal-model" data-no-backdrop="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-model-title">Novo Modelo de Aeronave</h3>
+        <button class="btn-close-modal"><i data-lucide="x"></i></button>
+      </div>
+      <form id="form-quick-model">
+        <input type="hidden" id="quick-model-id">
+        <div class="form-group" style="position: relative;">
+          <label for="qm-nome" style="margin-bottom: 4px; display: block;">Nome do Modelo *</label>
+          <div style="position: relative;">
+            <input type="text" id="qm-nome" required placeholder="Ex: Eurocopter AS350 B2 Esquilo 43cm" style="padding-right: 40px;">
+            <button type="button" onclick="runAiForName()" title="Corrigir Nome com IA" style="position: absolute; right: 5px; top: 50%; transform: translateY(-50%); background: var(--accent); border: none; color: #111; cursor: pointer; width: 26px; height: 26px; border-radius: 4px; display: flex; align-items: center; justify-content: center; opacity: 0.85; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.85'">
+              <i data-lucide="sparkles" style="width:16px; height:16px;"></i>
+            </button>
+          </div>
+          <span id="ai-name-status" style="font-size: 0.7rem; display: block; margin-top: 4px;"></span>
+          <div id="ai-name-options" style="display: none; margin-top: 8px; gap: 4px; flex-direction: column;">
+            <strong style="font-size: 0.7rem; color: var(--text-secondary);">Escolha o nome exato:</strong>
+            <div id="ai-name-options-list" style="display: flex; flex-direction: column; gap: 4px;"></div>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="qm-valor-arquivo">Preço do Arquivo 3D (R$)</label>
+            <input type="number" id="qm-valor-arquivo" step="0.01" min="0" placeholder="0,00" value="0.00">
+            <small class="help-text">Preço padrão cobrado do cliente se for arquivo novo.</small>
+          </div>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid var(--border-default); margin: 16px 0;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h4 style="margin: 0; font-size: 0.95rem; color: var(--text-primary);">Escalas / Tamanhos</h4>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="addModelVariant()">
+            <i data-lucide="plus" style="width:14px; height:14px;"></i> Adicionar Escala
+          </button>
+        </div>
+        
+        <div id="qm-variants-container" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px;">
+          <!-- Variants will be injected here via JS -->
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary btn-close-modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar Modelo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. MODAL DETALHE DA OS (TELA DE IMPRESSÃO) -->
+  <div class="modal-overlay" id="modal-os-detail">
+    <div class="modal-content modal-large detail-modal">
+      <div class="modal-header no-print">
+        <h3>Detalhamento da Ordem de Serviço</h3>
+        <div class="header-actions">
+          <button class="btn btn-secondary btn-icon" id="print-os-btn">
+            <i data-lucide="printer"></i> Imprimir
+          </button>
+          <button class="btn-close-modal">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Printable Area -->
+      <div class="print-layout-container" id="os-print-content">
+        <!-- Rendered dynamically for high quality layout -->
+      </div>
+    </div>
+  </div>
+
+  </div>
+
+  <!-- 5. MODAL DE LANÇAMENTO DE DEPÓSITO / RECEBIMENTO -->
+  <div class="modal-overlay" id="modal-deposit">
+    <div class="modal-content modal-large">
+      <div class="modal-header">
+        <h3>Lançar Depósito e Alocação de Pagamento</h3>
+        <button class="btn-close-modal"><i data-lucide="x"></i></button>
+      </div>
+      <form id="form-deposit">
+        <div class="form-grid grid-3">
+          <div class="form-group">
+            <label for="dep-pagador">Quem Pagou (Cliente) *</label>
+            <select id="dep-pagador" required>
+              <option value="">Selecione quem está pagando</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label id="dep-valor-label" for="dep-valor">Valor do Depósito (R$) *</label>
+            <input type="number" id="dep-valor" step="0.01" min="0.01" required placeholder="0,00">
+          </div>
+          <div class="form-group">
+            <label for="dep-data">Data do Depósito *</label>
+            <input type="date" id="dep-data" required>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label for="dep-obs">Observação / Notas</label>
+          <input type="text" id="dep-obs" placeholder="Ex: Referente ao sinal da OS 0010, adiantamento, etc.">
+        </div>
+
+        <!-- Client Credit Banner -->
+        <div id="dep-credit-info" class="hidden" style="margin-top: -10px; margin-bottom: 15px; padding: 10px 14px; background-color: rgba(241, 160, 0, 0.10); border: 1px dashed hsl(42, 95%, 50%); border-radius: 8px; display: flex; align-items: center; justify-content: space-between;">
+          <span style="font-size: 0.85rem; color: hsl(42, 95%, 62%);">Este cliente possui <strong id="dep-client-credit-value">R$ 0,00</strong> de crédito acumulado.</span>
+          <div class="checkbox-group" style="height: auto;">
+            <input type="checkbox" id="dep-use-credit-chk">
+            <label for="dep-use-credit-chk" style="font-size: 0.85rem; font-weight: 600; color: #fff;">Usar saldo de crédito</label>
+          </div>
+        </div>
+
+        <div class="section-divider">Abater nas Ordens de Serviço (Quitação Direcionada)</div>
+        <p class="help-text" style="margin-bottom: 12px;">Selecione quais contas deseja quitar com este depósito. Os campos mostram [Valor Total - Valor Já Pago].</p>
+
+        <!-- Debtors allocation table -->
+        <div class="table-responsive" style="max-height: 300px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 20px;">
+          <table class="data-table" style="font-size: 0.85rem;">
+            <thead>
+              <tr style="position: sticky; top:0; background: var(--bg-sidebar); z-index:1;">
+                <th style="min-width: 200px;">OS / Cliente</th>
+                <th>Total OS</th>
+                <th>Serviço (Maquete)</th>
+                <th>Arquivos 3D</th>
+                <th>Total Alocado</th>
+              </tr>
+            </thead>
+            <tbody id="deposit-allocation-rows">
+              <!-- Dynamic rows of OSs with balance due -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Deposit Summary calculation -->
+        <div style="background-color: hsla(224, 20%, 6%, 0.6); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+          <div style="text-align: center; border-right: 1px solid var(--border-color);">
+            <span class="help-text">Valor do Depósito</span>
+            <h4 id="dep-calc-total" style="font-size: 1.3rem; margin-top: 4px;">R$ 0,00</h4>
+          </div>
+          <div style="text-align: center; border-right: 1px solid var(--border-color);">
+            <span class="help-text">Total Alocado nas OSs</span>
+            <h4 id="dep-calc-alocado" style="font-size: 1.3rem; margin-top: 4px; color: var(--border-focus);">R$ 0,00</h4>
+          </div>
+          <div style="text-align: center;">
+            <span class="help-text">Sobrou como Crédito</span>
+            <h4 id="dep-calc-restante" style="font-size: 1.3rem; margin-top: 4px; color: var(--color-success);">R$ 0,00</h4>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary btn-close-modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="confirm-deposit-btn">Confirmar Lançamento</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 6. PRINT CHECKLIST CONTAINER (Hidden until printed) -->
+  <div id="print-checklist-container" class="print-checklist-container"></div>
+
+  <!-- Scripts -->
+  <script src="app.js?v=2.13.2"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(registration => {
+          console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        }, err => {
+          console.log('ServiceWorker registration failed: ', err);
+        });
+      });
+    }
+  </script>
+</body>
+</html>
+

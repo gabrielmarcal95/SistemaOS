@@ -1,0 +1,281 @@
+{
+  "clientes": [
+    {
+      "id": "cli_1",
+      "nome": "Parana Maquetes",
+      "telefone": "(41) 99999-1111",
+      "email": "contato@paranamaquetes.com",
+      "dataCadastro": "2026-06-01"
+    },
+    {
+      "id": "cli_2",
+      "nome": "Erasmo",
+      "telefone": "(41) 99999-2222",
+      "email": "erasmo@email.com",
+      "dataCadastro": "2026-06-02"
+    },
+    {
+      "id": "cli_3",
+      "nome": "Azul",
+      "telefone": "(11) 98888-3333",
+      "email": "contato@voeazul.com.br",
+      "dataCadastro": "2026-06-03"
+    },
+    {
+      "id": "cli_4",
+      "nome": "Gustavo",
+      "telefone": "(41) 99999-4444",
+      "email": "gustavo@email.com",
+      "dataCadastro": "2026-06-04"
+    }
+  ],
+  "fornecedores": [
+    {
+      "id": "for_1",
+      "nome": "Pintura & Acabamento Silva",
+      "contato": "Carlos Silva",
+      "telefone": "(41) 97777-5555",
+      "servico": "Pintura de Maquetes"
+    },
+    {
+      "id": "for_2",
+      "nome": "Polimento Sul",
+      "contato": "Marcos",
+      "telefone": "(41) 96666-4444",
+      "servico": "Polimento e Verniz"
+    }
+  ],
+  "modelos": [
+    {
+      "id": "mod_1",
+      "nome": "Cessna 152",
+      "comprimento": 15,
+      "envergadura": 22,
+      "materialPadrao": "RESINA",
+      "acabamentoPadrao": "Modelo Acabado",
+      "valorArquivo": 50.00
+    },
+    {
+      "id": "mod_2",
+      "nome": "Cessna 206",
+      "comprimento": 18,
+      "envergadura": 26,
+      "materialPadrao": "RESINA + ABS",
+      "acabamentoPadrao": "Modelo Acabado",
+      "valorArquivo": 60.00
+    },
+    {
+      "id": "mod_3",
+      "nome": "Robinson R66",
+      "comprimento": 22,
+      "envergadura": 25,
+      "materialPadrao": "RESINA",
+      "acabamentoPadrao": "Modelo Acabado",
+      "valorArquivo": 80.00
+    },
+    {
+      "id": "mod_4",
+      "nome": "Airbus A320 20CM",
+      "comprimento": 20,
+      "envergadura": 19,
+      "materialPadrao": "ABS",
+      "acabamentoPadrao": "Apenas Impressão 3D",
+      "valorArquivo": 150.00
+    },
+    {
+      "id": "mod_5",
+      "nome": "Montaer MC-01",
+      "comprimento": 14,
+      "envergadura": 21,
+      "materialPadrao": "RESINA",
+      "acabamentoPadrao": "Modelo Acabado",
+      "valorArquivo": 90.00
+    },
+    {
+      "id": "mod_6",
+      "nome": "Learjet",
+      "comprimento": 25,
+      "envergadura": 22,
+      "materialPadrao": "RESINA",
+      "acabamentoPadrao": "Modelo Acabado",
+      "valorArquivo": 115.00
+    },
+    {
+      "id": "mod_7",
+      "nome": "Cirrus",
+      "comprimento": 16,
+      "envergadura": 24,
+      "materialPadrao": "RESINA",
+      "acabamentoPadrao": "Modelo Acabado",
+      "valorArquivo": 75.00
+    },
+    {
+      "id": "mod_8",
+      "nome": "Pilatus",
+      "comprimento": 22,
+      "envergadura": 28,
+      "materialPadrao": "RESINA + ABS",
+      "acabamentoPadrao": "Modelo Acabado",
+      "valorArquivo": 100.00
+    },
+    {
+      "id": "mod_9",
+      "nome": "A-29 Super Tucano",
+      "comprimento": 20,
+      "envergadura": 22,
+      "materialPadrao": "ABS",
+      "acabamentoPadrao": "Modelo Acabado",
+      "valorArquivo": 95.00
+    },
+    {
+      "id": "mod_10",
+      "nome": "B200 King Air",
+      "comprimento": 24,
+      "envergadura": 28,
+      "materialPadrao": "RESINA + ABS",
+      "acabamentoPadrao": "Modelo Acabado",
+      "valorArquivo": 120.00
+    },
+    {
+      "id": "mod_11",
+      "nome": "Bell 430",
+      "comprimento": 26,
+      "envergadura": 24,
+      "materialPadrao": "RESINA",
+      "acabamentoPadrao": "Modelo Acabado",
+      "valorArquivo": 110.00
+    },
+    {
+      "id": "mod_frete",
+      "nome": "Frete",
+      "comprimento": 0,
+      "envergadura": 0,
+      "materialPadrao": "RESINA",
+      "acabamentoPadrao": "Apenas Impressão 3D",
+      "valorArquivo": 0.00
+    }
+  ],
+  "ordens": [
+    {
+      "id": "OS-2026-0001",
+      "clienteId": "cli_1",
+      "dataOrdem": "2026-06-07",
+      "estadoPagamento": "Pendente",
+      "valorTerceiros": 0.00,
+      "fornecedorTerceirosId": "",
+      "itens": [
+        {
+          "modeloId": "mod_6",
+          "quantidade": 2,
+          "matricula": "PR-XYZ",
+          "material": "RESINA",
+          "acabamento": "Modelo Acabado",
+          "valorUnitario": 130.00,
+          "arquivoNovo": true,
+          "valorArquivoItem": 115.00,
+          "estado": "Pendente"
+        },
+        {
+          "modeloId": "mod_7",
+          "quantidade": 2,
+          "matricula": "PT-ABC",
+          "material": "RESINA",
+          "acabamento": "Modelo Acabado",
+          "valorUnitario": 130.00,
+          "arquivoNovo": false,
+          "valorArquivoItem": 75.00,
+          "estado": "Pendente"
+        },
+        {
+          "modeloId": "mod_8",
+          "quantidade": 2,
+          "matricula": "PR-DEF",
+          "material": "RESINA + ABS",
+          "acabamento": "Modelo Acabado",
+          "valorUnitario": 130.00,
+          "arquivoNovo": false,
+          "valorArquivoItem": 100.00,
+          "estado": "Pendente"
+        },
+        {
+          "modeloId": "mod_9",
+          "quantidade": 2,
+          "matricula": "FAB-123",
+          "material": "ABS",
+          "acabamento": "Modelo Acabado",
+          "valorUnitario": 130.00,
+          "arquivoNovo": false,
+          "valorArquivoItem": 95.00,
+          "estado": "Pendente"
+        },
+        {
+          "modeloId": "mod_10",
+          "quantidade": 2,
+          "matricula": "PP-GHI",
+          "material": "RESINA + ABS",
+          "acabamento": "Modelo Acabado",
+          "valorUnitario": 130.00,
+          "arquivoNovo": false,
+          "valorArquivoItem": 120.00,
+          "estado": "Pendente"
+        },
+        {
+          "modeloId": "mod_11",
+          "quantidade": 2,
+          "matricula": "PR-JKL",
+          "material": "RESINA",
+          "acabamento": "Modelo Acabado",
+          "valorUnitario": 130.00,
+          "arquivoNovo": false,
+          "valorArquivoItem": 110.00,
+          "estado": "Pendente"
+        }
+      ],
+      "valorTotal": 1675.00
+    },
+    {
+      "id": "OS-2026-0002",
+      "clienteId": "cli_3",
+      "dataOrdem": "2026-06-06",
+      "estadoPagamento": "Pago",
+      "valorTerceiros": 0.00,
+      "fornecedorTerceirosId": "",
+      "itens": [
+        {
+          "modeloId": "mod_4",
+          "quantidade": 180,
+          "matricula": "PR-YTA",
+          "material": "ABS",
+          "acabamento": "Apenas Impressão 3D",
+          "valorUnitario": 35.00,
+          "arquivoNovo": false,
+          "valorArquivoItem": 150.00,
+          "estado": "Finalizado"
+        }
+      ],
+      "valorTotal": 6300.00
+    },
+    {
+      "id": "OS-2026-0003",
+      "clienteId": "cli_2",
+      "dataOrdem": "2026-06-05",
+      "estadoPagamento": "Pago",
+      "valorTerceiros": 0.00,
+      "fornecedorTerceirosId": "",
+      "itens": [
+        {
+          "modeloId": "mod_frete",
+          "quantidade": 1,
+          "matricula": "N/A",
+          "material": "RESINA",
+          "acabamento": "Apenas Impressão 3D",
+          "valorUnitario": 350.00,
+          "arquivoNovo": false,
+          "valorArquivoItem": 0.00,
+          "estado": "Finalizado"
+        }
+      ],
+      "valorTotal": 350.00
+    }
+  ]
+}
