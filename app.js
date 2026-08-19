@@ -2038,7 +2038,7 @@ function renderOSList() {
           <div class="table-actions">
             <button class="action-btn" onclick="viewOSDetails('${os.id}')" title="Imprimir / Detalhes"><i data-lucide="printer"></i></button>
             <button class="action-btn" onclick="editOS('${os.id}')" title="Editar"><i data-lucide="edit-3"></i></button>
-            <button class="action-btn btn-delete" onclick="deleteOS('${os.id}')" title="excluirá><i data-lucide="trash-2"></i></button>
+            <button class="action-btn btn-delete" onclick="deleteOS('${os.id}')" title="Excluir OS"><i data-lucide="trash-2"></i></button>
           </div>
         </td>
       </tr>
@@ -3019,10 +3019,25 @@ function saveOS(e) {
 }
 
 function deleteOS(osId) {
-  if (confirm(`Tem certeza que deseja excluirápermanentemente a OS ${osId}?`)) {
+  const os = state.ordens.find(o => o.id === osId);
+  if (!os) return;
+
+  // Verifica se há movimentação de produção (algum item com estado diferente de "Pendente")
+  const temMovimentacaoProducao = os.itens.some(item => item.estado && item.estado !== 'Pendente');
+
+  // Verifica se há movimentação financeira (estado de pagamento diferente de "Pendente")
+  const temMovimentacaoFinanceira = os.estadoPagamento && os.estadoPagamento !== 'Pendente';
+
+  if (temMovimentacaoProducao || temMovimentacaoFinanceira) {
+    showToast('Não é possível excluir esta OS pois ela já possui movimentação (produção iniciada ou pagamento registrado).', 'error');
+    return;
+  }
+
+  if (confirm(`Tem certeza que deseja excluir permanentemente a OS ${osId}?`)) {
     state.ordens = state.ordens.filter(o => o.id !== osId);
     saveToLocalStorage();
     renderOSList();
+    showToast('Ordem de Serviço excluída com sucesso!', 'success');
   }
 }
 
