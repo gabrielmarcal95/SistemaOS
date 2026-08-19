@@ -9,7 +9,55 @@ let state = {
 // Global variables for quick-add modals tracking
 let activeModelSelectElement = null;
 
-// Initialize App
+// ─── Global Toast Notification ───
+function showToast(message, type = 'success') {
+  const existing = document.getElementById('agy-toast');
+  if (existing) existing.remove();
+
+  const colors = {
+    success: { bg: 'var(--color-success)',  icon: '✓' },
+    error:   { bg: 'var(--color-danger)',    icon: '✕' },
+    info:    { bg: 'var(--color-info)',      icon: 'ℹ' },
+    warning: { bg: 'var(--color-warning)',   icon: '!' }
+  };
+  const c = colors[type] || colors.success;
+
+  const toast = document.createElement('div');
+  toast.id = 'agy-toast';
+  toast.style.cssText = `
+    position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+    display: flex; align-items: center; gap: 10px;
+    background: var(--bg-card); border: 1px solid ${c.bg};
+    border-left: 4px solid ${c.bg};
+    color: var(--text-primary); padding: 12px 18px;
+    border-radius: 10px; box-shadow: var(--shadow-lg);
+    font-size: 0.875rem; font-weight: 500;
+    animation: toastIn 0.25s ease;
+    max-width: 320px;
+  `;
+  toast.innerHTML = `
+    <span style="color:${c.bg}; font-weight:700; font-size:1rem;">${c.icon}</span>
+    <span>${message}</span>
+  `;
+
+  if (!document.getElementById('toast-style')) {
+    const s = document.createElement('style');
+    s.id = 'toast-style';
+    s.textContent = `
+      @keyframes toastIn  { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform:translateY(0); } }
+      @keyframes toastOut { from { opacity:1; transform:translateY(0);     } to { opacity:0; transform:translateY(12px); } }
+    `;
+    document.head.appendChild(s);
+  }
+
+  document.body.appendChild(toast);
+  setTimeout(() => {
+    toast.style.animation = 'toastOut 0.25s ease forwards';
+    setTimeout(() => toast.remove(), 250);
+  }, 2800);
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
   initDatabase().then(() => {
     setupEventListeners();
@@ -725,16 +773,14 @@ function setupEventListeners() {
     renderProfitReport();
   });
 
-  // OpenAI settings listeners
-  const saveKeyBtn = document.getElementById('btn-save-openai-key');
-  if (saveKeyBtn) {
-    saveKeyBtn.addEventListener('click', () => {
-      const key = document.getElementById('settings-openai-key').value.trim();
+  // OpenAI settings: auto-save on blur
+  const openAiKeyInput = document.getElementById('settings-openai-key');
+  if (openAiKeyInput) {
+    openAiKeyInput.addEventListener('blur', () => {
+      const key = openAiKeyInput.value.trim();
       if (key) {
         localStorage.setItem('aeroprint_openai_key', key);
-        alert("Chave de API OpenAI salva com sucesso!");
-      } else {
-        alert("Por favor, insira uma chave de API válida.");
+        showToast('Chave de API salva!');
       }
     });
   }
@@ -742,9 +788,9 @@ function setupEventListeners() {
   const deleteKeyBtn = document.getElementById('btn-delete-openai-key');
   if (deleteKeyBtn) {
     deleteKeyBtn.addEventListener('click', () => {
-      document.getElementById('settings-openai-key').value = '';
+      if (openAiKeyInput) openAiKeyInput.value = '';
       localStorage.removeItem('aeroprint_openai_key');
-      alert("Chave de API OpenAI removida.");
+      showToast('Chave de API removida.', 'info');
     });
   }
 
@@ -770,16 +816,19 @@ function setupEventListeners() {
   // Alert Settings Update
   document.getElementById('btn-save-alert-settings')?.addEventListener('click', saveAlertSettings);
 
-  // ---- Company Name ----
-  const saveNameBtn = document.getElementById('btn-save-company-name');
-  if (saveNameBtn) {
-    saveNameBtn.addEventListener('click', () => {
-      const val = document.getElementById('input-company-name').value.trim();
+  // ---- Company Name: auto-save on blur ----
+  const companyNameInput = document.getElementById('input-company-name');
+  if (companyNameInput) {
+    companyNameInput.addEventListener('blur', () => {
+      const val = companyNameInput.value.trim();
       if (val) {
         localStorage.setItem('aeroprint_company_name', val);
         applyCompanyName(val);
-        alert('Nome da empresa salvo!');
+        showToast('Nome da empresa atualizado!');
       }
+    });
+    companyNameInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') companyNameInput.blur();
     });
   }
 
@@ -1234,7 +1283,7 @@ window.saveAlertSettings = function () {
   state.alertSettings.valor_alto_pendente.valorMinimo = parseInt(document.getElementById('cfg-valoralto-valor').value) || 500;
 
   saveToLocalStorage();
-  alert("Configurações de alertas salvas!");
+  showToast('Configurações de alertas salvas!');
 };
 
 let currentModelVariants = [];
@@ -2220,9 +2269,14 @@ function addOSItemRow(itemData = null) {
       </div>
       <div class="form-group" style="grid-column: span 6;">
         <label>Tamanho / Variante *</label>
-        <select class="os-item-variant-select" required disabled>
-          <option value="">Selecione primeiro a Aeronave</option>
-        </select>
+        <div class="input-group">
+          <select class="os-item-variant-select" required disabled>
+            <option value="">Selecione primeiro a Aeronave</option>
+          </select>
+          <button type="button" class="btn btn-secondary btn-square-icon btn-sm os-item-add-variant-btn" onclick="openQuickVariantModal('${rowId}')" title="Adicionar Nova Variação" disabled>
+            <i data-lucide="plus"></i>
+          </button>
+        </div>
       </div>
       <div class="form-group" style="grid-column: span 2;">
         <label>Qtd *</label>
@@ -2390,8 +2444,11 @@ function onModelChange(rowId) {
   const variantSelect = row.querySelector('.os-item-variant-select');
   const model = state.modelos.find(m => m.id === modelId);
 
+  const addVariantBtn = row.querySelector('.os-item-add-variant-btn');
+
   if (model) {
     row.querySelector('.os-item-valor-arquivo-item').value = (model.valorArquivo || 0).toFixed(2);
+    if (addVariantBtn) addVariantBtn.disabled = false;
 
     if (model.variantes && model.variantes.length > 0) {
       variantSelect.innerHTML = '<option value="">Selecione o Tamanho</option>';
@@ -2409,6 +2466,7 @@ function onModelChange(rowId) {
   } else {
     variantSelect.innerHTML = '<option value="">Selecione primeiro a Aeronave</option>';
     variantSelect.disabled = true;
+    if (addVariantBtn) addVariantBtn.disabled = true;
     row.querySelector('.os-item-material').value = '';
     row.querySelector('.os-item-acabamento').value = '';
     row.querySelector('.os-item-valor-arquivo-item').value = "0.00";
@@ -2459,7 +2517,191 @@ function quickAddModalFromItemRow(rowId) {
   }
 }
 
-// Calculation logic for total OS de custos e total faturado
+// Opens a quick variant creation modal from inside the OS form
+function openQuickVariantModal(rowId) {
+  const row = document.getElementById(rowId);
+  if (!row) return;
+
+  const modelId = row.querySelector('.os-item-model-select').value;
+  if (!modelId) {
+    alert('Selecione uma Aeronave primeiro.');
+    return;
+  }
+
+  const model = state.modelos.find(m => m.id === modelId);
+  if (!model) return;
+
+  // Remove any existing quick variant modal
+  const existing = document.getElementById('modal-quick-variant-overlay');
+  if (existing) existing.remove();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'modal-quick-variant-overlay';
+  overlay.style.cssText = `
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 2000; padding: 16px; backdrop-filter: blur(4px);
+  `;
+
+  overlay.innerHTML = `
+    <div style="background: var(--bg-card); border: 1px solid var(--border-default); border-radius: 14px;
+                width: 100%; max-width: 480px; box-shadow: var(--shadow-lg); overflow: hidden;">
+      
+      <!-- Header -->
+      <div style="padding: 16px 20px; border-bottom: 1px solid var(--border-subtle);
+                  display: flex; justify-content: space-between; align-items: center;
+                  background: linear-gradient(135deg, rgba(241,160,0,0.08), transparent);">
+        <div>
+          <h3 style="font-size: 1rem; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px;">
+            <i data-lucide="plus-circle" style="width:18px;height:18px;color:var(--border-focus);"></i>
+            Nova Variação
+          </h3>
+          <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
+            Aeronave: <strong style="color: var(--text-primary);">${model.nome}</strong>
+          </p>
+        </div>
+        <button onclick="document.getElementById('modal-quick-variant-overlay').remove()"
+                style="background:none; border:none; color:var(--text-muted); cursor:pointer; padding:4px;">
+          <i data-lucide="x" style="width:20px;height:20px;"></i>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div style="padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label>Escala / Tamanho *</label>
+            <input type="text" id="qv-escala" placeholder="Ex: 1:32 ou 45cm" autofocus
+                   style="padding: 9px 12px; background: var(--bg-input); border: 1px solid var(--border-default); border-radius: 8px; color: #fff; width: 100%;">
+          </div>
+          <div class="form-group">
+            <label>Material</label>
+            <select id="qv-material" style="padding: 9px 12px; background: var(--bg-input); border: 1px solid var(--border-default); border-radius: 8px; color: #fff; width: 100%;">
+              <option value="">-- Selecionar --</option>
+              <option value="ABS">ABS</option>
+              <option value="RESINA">RESINA</option>
+              <option value="RESINA + ABS">RESINA + ABS</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label>Comprimento (cm)</label>
+            <input type="number" id="qv-comprimento" step="0.1" placeholder="0"
+                   style="padding: 9px 12px; background: var(--bg-input); border: 1px solid var(--border-default); border-radius: 8px; color: #fff; width: 100%;">
+          </div>
+          <div class="form-group">
+            <label>Envergadura (cm)</label>
+            <input type="number" id="qv-envergadura" step="0.1" placeholder="0"
+                   style="padding: 9px 12px; background: var(--bg-input); border: 1px solid var(--border-default); border-radius: 8px; color: #fff; width: 100%;">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label>Custo Produção (R$)</label>
+            <input type="number" id="qv-custo" step="0.01" placeholder="0,00"
+                   style="padding: 9px 12px; background: var(--bg-input); border: 1px solid var(--border-default); border-radius: 8px; color: #fff; width: 100%;">
+          </div>
+          <div class="form-group">
+            <label>Preço Base (R$)</label>
+            <input type="number" id="qv-preco" step="0.01" placeholder="0,00"
+                   style="padding: 9px 12px; background: var(--bg-input); border: 1px solid var(--border-default); border-radius: 8px; color: #fff; width: 100%;">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label>Acabamento</label>
+            <select id="qv-acabamento" style="padding: 9px 12px; background: var(--bg-input); border: 1px solid var(--border-default); border-radius: 8px; color: #fff; width: 100%;">
+              <option value="">-- Selecionar --</option>
+              <option value="Modelo Acabado">Modelo Acabado</option>
+              <option value="Apenas Impressão 3D">Apenas Impressão 3D</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <div style="padding: 14px 20px; border-top: 1px solid var(--border-subtle);
+                  display: flex; gap: 10px; justify-content: flex-end;">
+        <button onclick="document.getElementById('modal-quick-variant-overlay').remove()"
+                class="btn btn-secondary">Cancelar</button>
+        <button onclick="saveQuickVariant('${modelId}', '${rowId}')"
+                class="btn btn-primary" style="background: var(--gradient-primary); color: #000; font-weight: 700;">
+          <i data-lucide="save" style="width:15px;height:15px;"></i> Salvar Variação
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+  lucide.createIcons();
+
+  // Close on overlay click
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.remove();
+  });
+
+  // Focus escala input
+  setTimeout(() => document.getElementById('qv-escala')?.focus(), 100);
+}
+
+function saveQuickVariant(modelId, rowId) {
+  const escala = document.getElementById('qv-escala')?.value.trim();
+  if (!escala) {
+    alert('Informe a Escala/Tamanho da variação.');
+    document.getElementById('qv-escala')?.focus();
+    return;
+  }
+
+  const newVariant = {
+    id: 'var_' + Date.now() + Math.floor(Math.random() * 1000),
+    escala,
+    comprimento: parseFloat(document.getElementById('qv-comprimento')?.value) || 0,
+    envergadura: parseFloat(document.getElementById('qv-envergadura')?.value) || 0,
+    materialPadrao: document.getElementById('qv-material')?.value || '',
+    acabamentoPadrao: document.getElementById('qv-acabamento')?.value || '',
+    custoProducao: parseFloat(document.getElementById('qv-custo')?.value) || 0,
+    precoBase: parseFloat(document.getElementById('qv-preco')?.value) || 0
+  };
+
+  // Save to the model in state
+  const modelIndex = state.modelos.findIndex(m => m.id === modelId);
+  if (modelIndex === -1) return;
+
+  if (!state.modelos[modelIndex].variantes) {
+    state.modelos[modelIndex].variantes = [];
+  }
+  state.modelos[modelIndex].variantes.push(newVariant);
+  saveToLocalStorage();
+
+  // Close the modal
+  document.getElementById('modal-quick-variant-overlay')?.remove();
+
+  // Refresh the variant dropdown in the OS form row and select the new one
+  const row = document.getElementById(rowId);
+  if (row) {
+    const variantSelect = row.querySelector('.os-item-variant-select');
+    const model = state.modelos[modelIndex];
+
+    variantSelect.innerHTML = '<option value="">Selecione o Tamanho</option>';
+    model.variantes.forEach(v => {
+      const opt = document.createElement('option');
+      opt.value = v.id;
+      opt.textContent = v.escala || (v.comprimento + 'cm');
+      variantSelect.appendChild(opt);
+    });
+    variantSelect.disabled = false;
+    variantSelect.value = newVariant.id;
+    variantSelect.dispatchEvent(new Event('change'));
+  }
+}
+
+
 function calculateOSTotals() {
   let subtotal = 0;
   let totalArquivosDivididos = 0;
