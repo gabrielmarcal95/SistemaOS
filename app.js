@@ -417,11 +417,32 @@ function switchTab(tabId) {
 
 // ================= EVENT LISTENERS SETUP =================
 function setupEventListeners() {
+  // ─── Mobile Menu Toggle ───
+  const btnMobileMenu = document.getElementById('btn-mobile-menu');
+  const sidebar       = document.querySelector('.sidebar');
+  const overlay       = document.getElementById('sidebar-overlay');
+
+  function openMobileSidebar() {
+    sidebar.classList.add('mobile-open');
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMobileSidebar() {
+    sidebar.classList.remove('mobile-open');
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  if (btnMobileMenu) btnMobileMenu.addEventListener('click', openMobileSidebar);
+  if (overlay)       overlay.addEventListener('click', closeMobileSidebar);
+
   // Nav clicks
   document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const target = btn.getAttribute('data-target');
       switchTab(target);
+      closeMobileSidebar(); // auto-close drawer on mobile
     });
   });
 

@@ -18,6 +18,9 @@
 <body>
   <!-- App Shell -->
   <div class="app-container">
+    <!-- Mobile Overlay -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
     <!-- Sidebar Navigation -->
     <aside class="sidebar no-print">
       <div class="brand">
@@ -88,9 +91,15 @@
     <main class="main-content">
       <!-- Topbar / Header -->
       <header class="topbar no-print">
-        <div class="page-title-container">
-          <h2 id="current-page-title">Dashboard</h2>
-          <p id="current-page-subtitle">Visão geral do seu negócio de impressão 3D</p>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <!-- Mobile Menu Toggle -->
+          <button class="btn-mobile-menu" id="btn-mobile-menu" aria-label="Abrir Menu">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="page-title-container">
+            <h2 id="current-page-title">Dashboard</h2>
+            <p id="current-page-subtitle">Visão geral do seu negócio de impressão 3D</p>
+          </div>
         </div>
         <div class="topbar-actions">
           <!-- Bell Alert Button -->

@@ -1826,25 +1826,203 @@ input, select, textarea { font-family: inherit; }
 }
 
 /* ========================= 26. RESPONSIVE BREAKPOINTS ========================= */
+
+/* ─── Tablet: 1100px ─── */
 @media (max-width: 1100px) {
   .dashboard-row   { grid-template-columns: 1fr; }
   .stats-grid      { grid-template-columns: repeat(3, 1fr); }
   .main-content    { padding: 0 22px 36px; }
 }
 
-@media (max-width: 768px) {
+/* ─── Small Tablet: 900px ─── */
+@media (max-width: 900px) {
   .stats-grid      { grid-template-columns: repeat(2, 1fr); }
-  .sidebar         { width: 200px; }
+  .sidebar         { width: 220px; }
   .grid-3          { grid-template-columns: 1fr 1fr; }
 }
 
-@media (max-width: 580px) {
-  .stats-grid      { grid-template-columns: 1fr; }
-  .filter-bar      { flex-wrap: wrap; }
+/* ─── Mobile: 768px ─── */
+@media (max-width: 768px) {
+  /* --- Mobile Menu Button (hamburger) --- */
+  .btn-mobile-menu {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .btn-mobile-menu i, .btn-mobile-menu svg { width: 20px; height: 20px; }
+
+  /* --- Sidebar as Slide-in Drawer --- */
+  .sidebar {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    height: 100%;
+    width: 260px !important;
+    z-index: 999;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-right: 1px solid var(--border-default);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .sidebar.mobile-open {
+    left: 0;
+  }
+
+  /* --- Sidebar Overlay --- */
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 998;
+    backdrop-filter: blur(2px);
+  }
+  .sidebar-overlay.active { display: block; }
+
+  /* --- Layout Adjustments --- */
+  .app-container { flex-direction: column; }
+
+  .main-content {
+    padding: 0 14px 36px;
+    width: 100%;
+  }
+
+  /* --- Topbar --- */
+  .topbar {
+    padding: 12px 0;
+    height: auto;
+    min-height: 60px;
+    position: sticky;
+    gap: 8px;
+  }
+
+  .page-title-container h2 { font-size: 1.2rem; }
+  .page-title-container p  { font-size: 0.75rem; display: none; }
+
+  .topbar-actions { gap: 6px; }
+
+  /* --- Stat Cards --- */
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .stat-card  { padding: 14px; }
+  .stat-value { font-size: 1.4rem; }
+
+  /* --- Cards --- */
+  .card { border-radius: var(--radius-md); }
+  .card-content { padding: 14px; }
+  .card-header  { padding: 12px 14px; }
+
+  /* --- Dashboard Grid --- */
+  .dashboard-row { grid-template-columns: 1fr; gap: 16px; }
+
+  /* --- Production Cards --- */
   .production-cards-grid { grid-template-columns: 1fr; }
-  .print-billing-grid    { grid-template-columns: 1fr; }
-  .grid-3          { grid-template-columns: 1fr; }
+
+  /* --- Grids --- */
+  .grid-3, .grid-2 { grid-template-columns: 1fr; }
+
+  /* --- Tables: make them scroll horizontally --- */
+  .table-wrapper, .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { min-width: 600px; font-size: 0.78rem; }
+  th, td { padding: 8px 10px; }
+
+  /* --- Filter Bar --- */
+  .filter-bar {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .filter-bar .form-group { flex: 1; min-width: 140px; }
+  .filter-bar select, .filter-bar input { font-size: 0.8rem; }
+
+  /* --- OS Form --- */
+  .os-form-layout { grid-template-columns: 1fr; }
+  .os-summary-sticky { position: static; }
+  .os-summary-section { max-width: none; }
+  .os-item-grid { grid-template-columns: 1fr 1fr; }
+  .os-item-grid > .form-group { grid-column: span 2 !important; }
+
+  /* --- Reports --- */
+  .report-tabs { gap: 4px; flex-wrap: wrap; }
+  .report-tab-btn { font-size: 0.8rem; padding: 7px 10px; }
+
+  /* --- Modals --- */
+  .modal-content {
+    width: 95vw;
+    max-width: 95vw;
+    max-height: 90vh;
+    margin: 5vh auto;
+    border-radius: var(--radius-lg);
+  }
+  .modal-header { padding: 14px 16px; }
+  .modal-body   { padding: 14px 16px; }
+
+  /* --- Buttons --- */
+  .btn { font-size: 0.82rem; padding: 8px 12px; }
+  .btn-sm { font-size: 0.75rem; padding: 5px 8px; }
+
+  /* --- Settings --- */
+  .settings-grid { grid-template-columns: 1fr; }
+
+  /* --- Alerts Panel --- */
+  .alerts-panel { width: 90vw; right: -10px; }
+
+  /* --- Form groups in report filter --- */
+  .report-filter-row { flex-wrap: wrap; }
+  .report-filter-row .form-group { flex: 1 1 140px; }
+
+  /* --- Payments view --- */
+  .print-billing-grid { grid-template-columns: 1fr; }
 }
+
+/* ─── Small Mobile: 480px ─── */
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stat-card  { padding: 12px; }
+  .stat-value { font-size: 1.25rem; }
+  .stat-label { font-size: 0.7rem; }
+
+  .main-content { padding: 0 10px 24px; }
+
+  .production-cards-grid { grid-template-columns: 1fr; }
+
+  .page-title-container h2 { font-size: 1.05rem; }
+
+  .topbar { padding: 10px 0; }
+
+  /* Form stacking */
+  .os-item-grid { grid-template-columns: 1fr; }
+  .os-item-grid > .form-group { grid-column: span 1 !important; }
+
+  /* Cards tighten up */
+  .card-content { padding: 12px; }
+  .card-header  { padding: 10px 12px; }
+
+  /* Filter bar stacks */
+  .filter-bar { flex-direction: column; }
+  .filter-bar .form-group { min-width: 100%; }
+
+  /* Hide non-essential topbar elements */
+  .btn-alert-bell { width: 36px; height: 36px; }
+
+  /* Novo OS button label shortening handled by JS */
+  .btn-novo-os-label { display: none; }
+
+  /* Table rows smaller */
+  table { font-size: 0.72rem; }
+  th, td { padding: 6px 8px; }
+}
+
+
 
 /* Lock OS Form Elements */
 #os-form *:disabled { cursor: not-allowed !important; }
+
+/* Mobile menu button — hidden on desktop by default */
+.btn-mobile-menu { display: none; }
