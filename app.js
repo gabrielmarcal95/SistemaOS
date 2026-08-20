@@ -3022,18 +3022,24 @@ function deleteOS(osId) {
   const os = state.ordens.find(o => o.id === osId);
   if (!os) return;
 
-  // Verifica se há movimentação de produção (algum item com estado diferente de "Pendente")
-  const temMovimentacaoProducao = os.itens.some(item => item.estado && item.estado !== 'Pendente');
+  // 1. Bloqueia se houver movimentação financeira real (depósitos alocados ou status Pago/Pago Parcial)
+  const temTxFinanceira = checkOSHasFinancialTransactions(osId);
+  const temStatusPago = os.estadoPagamento && os.estadoPagamento !== 'Pendente';
 
-  // Verifica se há movimentação financeira (estado de pagamento diferente de "Pendente")
-  const temMovimentacaoFinanceira = os.estadoPagamento && os.estadoPagamento !== 'Pendente';
-
-  if (temMovimentacaoProducao || temMovimentacaoFinanceira) {
-    showToast('Não é possível excluir esta OS pois ela já possui movimentação (produção iniciada ou pagamento registrado).', 'error');
+  if (temTxFinanceira || temStatusPago) {
+    showToast('Não é possível excluir esta OS pois ela já possui movimentação financeira (pagamentos lançados ou status Pago).', 'error');
     return;
   }
 
-  if (confirm(`Tem certeza que deseja excluir permanentemente a OS ${osId}?`)) {
+  // 2. Se houver movimentação de produção (itens em andamento ou concluídos), apenas pedimos confirmação extra
+  const temMovimentacaoProducao = os.itens.some(item => item.estado && item.estado !== 'Pendente');
+
+  let mensagemConfirmacao = `Tem certeza que deseja excluir permanentemente a OS ${osId}?`;
+  if (temMovimentacaoProducao) {
+    mensagemConfirmacao = `Atenção: Esta OS possui itens com produção iniciada ou finalizada. Deseja realmente excluir a OS ${osId} permanentemente?`;
+  }
+
+  if (confirm(mensagemConfirmacao)) {
     state.ordens = state.ordens.filter(o => o.id !== osId);
     saveToLocalStorage();
     renderOSList();
